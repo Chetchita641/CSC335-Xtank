@@ -11,7 +11,8 @@ public class XTank {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-    	XTankUI ui = new XTankUI(client);
+    	XTankUI ui = new XTankUI();
+    	ui.setClient(client);
     	client.setUI(ui);
     	ClientRun cr = new ClientRun(client);
     	UIRun ur = new UIRun(ui);
@@ -21,5 +22,36 @@ public class XTank {
     	clientThread.start();
     	
     	s.close();
+	}
+}
+
+class ClientRun implements Runnable{
+	private Client client;
+	
+	public ClientRun(Client c) {
+		client = c;
+	}
+
+	@Override
+	public void run() {
+		try {
+			client.play();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+}
+
+
+class UIRun implements Runnable{
+	private XTankUI ui;
+	
+	public UIRun(XTankUI ui) {
+		this.ui = ui;
+	}
+
+	@Override
+	public void run() {
+		ui.start();
 	}
 }

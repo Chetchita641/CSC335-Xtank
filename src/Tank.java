@@ -34,6 +34,10 @@ public class Tank extends Glyph{
 		return (x>=xCord&&x<=(xCord+WIDTH))&&(y>=yCord&&y<=(yCord+HEIGHT));
 	}
 	
+	public void shoot() {
+		//TODO
+	}
+	
 	public void rotateLeft() {
 		orientation--;
 	}

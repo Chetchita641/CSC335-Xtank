@@ -8,23 +8,16 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-public class XTankUI
-{
-	// The location and direction of the "tank"
-	private int x = 300;
-	private int y = 500;
-	private int directionX = 0;
-	private int directionY = -10;
-
+public class XTankUI{
+	
 	private Canvas canvas;
 	private Display display;
 	private Shell shell;
 	private Client client;
 	private GC gc;
 	
-	public XTankUI(Client c){
+	public void setClient(Client c) {
 		client = c;
-		
 	}
 	
 	public void start(){
@@ -58,8 +51,8 @@ public class XTankUI
 			public void keyPressed(KeyEvent e) {
 				// update tank location
 				if(e.keyCode==SWT.ARROW_UP) {
-					x += directionX;
-					y += directionY;
+					/*x += directionX;
+					y += directionY;*/
 					client.move();
 					canvas.redraw();
 				}
@@ -98,18 +91,3 @@ public class XTankUI
 			});
 	}
 }
-
-class UIRun implements Runnable{
-	private XTankUI ui;
-	
-	public UIRun(XTankUI ui) {
-		this.ui = ui;
-	}
-
-	@Override
-	public void run() {
-		ui.start();
-	}
-}
-
-

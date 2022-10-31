@@ -1,13 +1,14 @@
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.Scanner;
 
 /**
  * A client for XTank
  */
-public class Client 
-{
+public class Client {
     private Socket socket;
     //private ObjectInputStream in;
     private Scanner in;
@@ -15,21 +16,38 @@ public class Client
     private GameModel game;
     private XTankUI ui;
 
-    public Client(String serverAddress, String name) throws Exception {
-        socket = new Socket(serverAddress, 58901);
-        //in = new ObjectInputStream(socket.getInputStream());
-        in = new Scanner(socket.getInputStream());
-        out = new PrintWriter(socket.getOutputStream(), true);
+    /**
+     * Creates a new Client for XTank
+     * @param serverAddress the server to connect to
+     * @param name name of the player on this Client
+     */
+    public Client(String serverAddress, String name) {
+        try {
+			socket = new Socket(serverAddress, 58901);
+	        //in = new ObjectInputStream(socket.getInputStream());
+			in = new Scanner(socket.getInputStream());
+			out = new PrintWriter(socket.getOutputStream(), true);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} 
         out.println(name);
         out.flush();
         game = new GameModel();
     }
     
+    /**
+     * Sets the XTankUI to use for this Client
+     * @param ui
+     */
     public void setUI(XTankUI ui) {
     	this.ui = ui;
     }
     
-    public void play() throws Exception {
+    /**
+     * Starts the game play for this Client
+     * This reads in and processes responses from the server
+     */
+    public void play(){
     	
         try {
             //Object response = in.readObject();
@@ -42,8 +60,8 @@ public class Client
             	if(response.startsWith("add tanks")) {
             		processAddTanks(response.substring(10));
             	}
-            	else if(response.startsWith("move forward")) {
-            		processMove(response.substring(21));
+            	else if(response.startsWith("move")) {
+            		processMove(response.substring(13));
             	}
             	game.drawAll(ui);
             }
@@ -57,12 +75,39 @@ public class Client
             e.printStackTrace();
         } 
         finally {
-            socket.close();
+            try {
+				socket.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
         }
     }
 
+
+	/**
+	 * Sends command to server this Client's tank
+	 */
+	public void move() {
+		out.println("move");
+		out.flush();
+	}
+	
+	/**
+	 * Sends command to server to shoot from this Client's tank
+	 */
+	public void shoot() {
+		out.println("shoot");
+		out.flush();
+	}
+    
+    /**
+     * Process an "add tanks" command from the server
+     * Will add Tanks to the Client's GameModel using the info specified
+     * in tanksInfo
+     * @param tanksInfo String that contains the IDs and coordinates of
+     * 		the tanks to add
+     */
 	private void processAddTanks(String tanksInfo) {
-		System.out.println(tanksInfo);
 		int i = 0;
 		while(i<tanksInfo.length()) {
 			if(tanksInfo.charAt(i)=='(') {
@@ -75,44 +120,19 @@ public class Client
 				int playerId = Integer.parseInt(tanksInfo.substring(i, first));
 				int xCord = Integer.parseInt(tanksInfo.substring(first+1, second));
 				int yCord = Integer.parseInt(tanksInfo.substring(second+1, third));
-				System.out.println(playerId + " " + xCord + " " +yCord);
 				game.addTank(playerId, xCord, yCord);
 				i = third+1;
 			}
 		}
 	}
 	
+	/**
+	 * Processes a move command. This will move the one of the tanks in the
+	 * GameModel
+	 * @param moveInfo information from the server on which tank to move
+	 */
 	private void processMove(String moveInfo) {
 		int playerId = Integer.parseInt(moveInfo);
 		game.moveTank(playerId);
 	}
-
-	public void move() {
-		System.out.println("move in clinet");
-		out.println("move forward");
-		out.flush();
-	}
-	
-	public void shoot() {
-		out.println("shoot");
-		out.flush();
-	}
 }
-
-class ClientRun implements Runnable{
-	private Client client;
-	
-	public ClientRun(Client c) {
-		client = c;
-	}
-
-	@Override
-	public void run() {
-		try {
-			client.play();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-}
-
