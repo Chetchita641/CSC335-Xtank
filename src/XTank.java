@@ -12,13 +12,13 @@ public class XTank {
 			e.printStackTrace();
 		}
     	XTankUI ui = new XTankUI(client);
-       
+    	client.setUI(ui);
     	ClientRun cr = new ClientRun(client);
     	UIRun ur = new UIRun(ui);
     	Thread clientThread = new Thread(cr);
     	Thread uiThread = new Thread(ur);
-    	clientThread.start();
     	uiThread.start();
+    	clientThread.start();
     	
     	s.close();
 	}

@@ -18,29 +18,33 @@ public class XTankUI
 
 	private Canvas canvas;
 	private Display display;
-	
+	private Shell shell;
 	private Client client;
+	private GC gc;
 	
 	public XTankUI(Client c){
 		client = c;
+		
 	}
 	
 	public void start(){
+		
 		display = new Display();
-		Shell shell = new Shell(display);
+		this.shell = new Shell(display);
 		shell.setText("xtank");
 		shell.setLayout(new FillLayout());
 
 		canvas = new Canvas(shell, SWT.NO_BACKGROUND);
 
+		gc = new GC(canvas);
 		canvas.addPaintListener(event -> {
 			event.gc.fillRectangle(canvas.getBounds());
-			event.gc.setBackground(shell.getDisplay().getSystemColor(SWT.COLOR_DARK_GREEN));
+			/*event.gc.setBackground(shell.getDisplay().getSystemColor(SWT.COLOR_DARK_GREEN));
 			event.gc.fillRectangle(x, y, 50, 100);
 			event.gc.setBackground(shell.getDisplay().getSystemColor(SWT.COLOR_BLACK));
 			event.gc.fillOval(x, y+25, 50, 50);
 			event.gc.setLineWidth(4);
-			event.gc.drawLine(x+25, y+25, x+25, y-15);
+			event.gc.drawLine(x+25, y+25, x+25, y-15);*/
 		});	
 
 		canvas.addMouseListener(new MouseListener() {
@@ -79,6 +83,19 @@ public class XTankUI
 				display.sleep();
 
 		display.dispose();		
+	}
+	
+	public void drawTank(int x, int y) {
+		Display.getDefault().asyncExec(new Runnable() {
+			 public void run() {
+				gc.setBackground(display.getSystemColor(SWT.COLOR_DARK_GREEN));
+				gc.fillRectangle(x, y, 50, 100);
+				gc.setBackground(display.getSystemColor(SWT.COLOR_BLACK));
+				gc.fillOval(x, y+25, 50, 50);
+				gc.setLineWidth(4);
+				gc.drawLine(x+25, y+25, x+25, y-15);
+			 }
+			});
 	}
 }
 
