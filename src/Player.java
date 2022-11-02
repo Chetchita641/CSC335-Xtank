@@ -13,6 +13,7 @@ public class Player implements Runnable {
 	private String name;
 	private int playerId;
 	private GameModel game;
+	private XTankServer server;
 	
 	/**
 	 * Creates a new Player
@@ -25,13 +26,14 @@ public class Player implements Runnable {
 		this.socket = socket;
 		this.game = game;
 		this.playerId = playerId;
+		this.server = XTankServer.getInstance();
 		game.addTank(playerId);
-		XTankServer.notifyPlayers();
+		server.notifyPlayers();
 	}
 
 	/**
 	 * The code to execute when the making this Player's thread
-	 * Creates input and output for this client socket and processes commands
+	 * Creates input and output for this client's socket and processes commands
 	 * coming from the client
 	 */
 	@Override
@@ -79,7 +81,7 @@ public class Player implements Runnable {
 			else if(command.equals("shoot")) {
 				game.shoot(playerId);
 			}
-			XTankServer.notifyPlayers();
+			server.notifyPlayers();
 		}
 	}
 }

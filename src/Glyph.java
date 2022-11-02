@@ -6,5 +6,4 @@ public abstract class Glyph {
 	public abstract void move();
 	
 	public abstract boolean intersects(int x, int y);
-	
 }
