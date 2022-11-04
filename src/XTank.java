@@ -4,7 +4,8 @@ public class XTank {
 	public static void main(String [] args) {
 		Scanner s = new Scanner(System.in);
     	System.out.println("Enter name:");
-    	String name = s.nextLine();
+    	//String name = s.nextLine();
+		String name = "Bob";
     	Client client = null;
 		try {
 			client = new Client("127.0.0.1", name);

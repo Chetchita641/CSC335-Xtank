@@ -36,8 +36,9 @@ public class XTankServer {
     public void start() {
         try (ServerSocket listener = new ServerSocket(58901)) {
             System.out.println("XTank Server is Running...");
-            ExecutorService pool = Executors.newFixedThreadPool(200);
-            while (true) {
+            ExecutorService pool = Executors.newFixedThreadPool(10);
+            while (true) 
+            {
                 Player p = new Player(listener.accept(), game, players.size());
                 players.add(p);
             	pool.execute(p);

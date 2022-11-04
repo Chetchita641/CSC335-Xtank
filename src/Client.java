@@ -50,11 +50,10 @@ public class Client {
     public void play(){
     	
         try {
-            //Object response = in.readObject();
-            String response = in.nextLine();
-            System.out.println(response);
+            //Object response = ((ObjectInputStream) in).readObject();
+            String response;
             
-            while(in.hasNext()) {
+            do {
             	response = in.nextLine();
             	System.out.println(response);
             	if(response.startsWith("add tanks")) {
@@ -63,13 +62,19 @@ public class Client {
             	else if(response.startsWith("move")) {
             		processMove(response.substring(13));
             	}
+				else if(response.startsWith("left")) {
+					processLeft(response.substring(13));
+				}
+				else if(response.startsWith("right")) {
+					processRight(response.substring(14));
+				}
             	game.drawAll(ui);
-            }
-            /*
-            while(in.available()>0) {
-            	System.out.println(in.readObject());
-            }
-            */
+            } while (in.hasNext());
+            
+            /*while(in.available()>0) {
+            	System.out.println(((ObjectInputStream) in).readObject());
+            }*/
+            
         } 
         catch (Exception e) {
             e.printStackTrace();
@@ -89,6 +94,16 @@ public class Client {
 	 */
 	public void move() {
 		out.println("move");
+		out.flush();
+	}
+
+	public void rotateLeft() {
+		out.println("left");
+		out.flush();
+	}
+
+	public void rotateRight() {
+		out.println("right");
 		out.flush();
 	}
 	
@@ -134,5 +149,15 @@ public class Client {
 	private void processMove(String moveInfo) {
 		int playerId = Integer.parseInt(moveInfo);
 		game.moveTank(playerId);
+	}
+
+	private void processLeft(String leftInfo) {
+		int playerId = Integer.parseInt(leftInfo);
+		game.rotateLeft(playerId);
+	}
+	
+	private void processRight(String rightInfo) {
+		int playerId = Integer.parseInt(rightInfo);
+		game.rotateRight(playerId);
 	}
 }

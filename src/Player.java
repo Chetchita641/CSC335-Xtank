@@ -42,7 +42,7 @@ public class Player implements Runnable {
 			input = new Scanner(socket.getInputStream());
 			//output = new ObjectOutputStream(socket.getOutputStream());
 			output = new PrintWriter(socket.getOutputStream());
-			this.name = input.nextLine();
+			this.name = input.nextLine(); 
 			//output.writeObject("hi " + name);
 			output.println("hi " + name);
 			output.println("add tanks " + game.listTanks());
@@ -77,6 +77,12 @@ public class Player implements Runnable {
 			System.out.println("received command " + command);
 			if(command.equals("move")) {
 				game.moveTank(playerId);
+			}
+			else if (command.equals("left")) {
+				game.rotateLeft(playerId);
+			}
+			else if (command.equals("right")) {
+				game.rotateRight(playerId);
 			}
 			else if(command.equals("shoot")) {
 				game.shoot(playerId);
