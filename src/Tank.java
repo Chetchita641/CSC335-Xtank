@@ -6,7 +6,7 @@ public class Tank extends Glyph{
 	private int xCord;
 	private int yCord;
 	private int health;
-	private int orientation;
+	private double orientation;
 	private int playerId;
 	private boolean isActive;
 	
@@ -21,7 +21,7 @@ public class Tank extends Glyph{
 	
 	@Override
 	public void draw(XTankUI ui) {
-		ui.drawTank(xCord, yCord);
+		ui.drawTank(xCord, yCord, orientation);
 	}
 
 	@Override
@@ -39,11 +39,11 @@ public class Tank extends Glyph{
 	}
 	
 	public void rotateLeft() {
-		orientation--;
+		orientation += 5;
 	}
 	
 	public void rotateRight() {
-		orientation++;
+		orientation -= 5;
 	}
 	
 	public String toString() {

@@ -57,6 +57,16 @@ public class GameModel implements Serializable {
 		tanks.get(index).move();
 		lastChange = "move: player " + index;
 	}
+
+	public void rotateLeft(int index) {
+		tanks.get(index).rotateLeft();
+		lastChange = "left: player " + index;
+	}
+
+	public void rotateRight(int index) {
+		tanks.get(index).rotateRight();
+		lastChange = "right: player " + index;
+	}
 	
 	public void shoot(int playerId) {
 		tanks.get(playerId).shoot();

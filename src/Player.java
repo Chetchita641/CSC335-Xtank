@@ -76,6 +76,12 @@ public class Player implements Runnable {
 			if(command.equals("move")) {
 				game.moveTank(playerId);
 			}
+			else if (command.equals("left")) {
+				game.rotateLeft(playerId);
+			}
+			else if (command.equals("right")) {
+				game.rotateRight(playerId);
+			}
 			else if(command.equals("shoot")) {
 				game.shoot(playerId);
 			}
