@@ -9,7 +9,7 @@ public class XTankServer {
 
     public static void main(String[] args) throws Exception {
     	players = new ArrayList<Player>();
-    	GameModel game = new GameModel();
+    	GameModel game = GameModel.getInstance();
         try (ServerSocket listener = new ServerSocket(58901)) {
             System.out.println("XTank Server is Running...");
             ExecutorService pool = Executors.newFixedThreadPool(10);

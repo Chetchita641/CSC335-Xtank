@@ -32,7 +32,7 @@ public class Client {
 		} 
         out.println(name);
         out.flush();
-        game = new GameModel();
+        game = GameModel.getInstance();
     }
     
     /**
@@ -68,7 +68,7 @@ public class Client {
 				else if(response.startsWith("right")) {
 					processRight(response.substring(14));
 				}
-            	game.drawAll(ui);
+            	//game.drawAll(ui);
             } while (in.hasNext());
             /*
             while(in.available()>0) {
