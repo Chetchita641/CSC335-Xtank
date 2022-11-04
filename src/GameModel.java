@@ -2,8 +2,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.swt.widgets.Display;
-
 public class GameModel implements Serializable {
 	private static GameModel gameModelInstance;
 
@@ -45,9 +43,9 @@ public class GameModel implements Serializable {
 
 	public void updateState() {
 		long currentTime = System.nanoTime();
-		double deltaTime = (currentTime-lastTime)/1000000;
+		double deltaTime = (double) (currentTime-lastTime)/1000000000;
 		for (Tank tank : tanks) {
-			tank.increment(deltaTime);
+			tank.update(deltaTime);
 		}
 		lastTime = currentTime;
 	}
@@ -91,19 +89,24 @@ public class GameModel implements Serializable {
 	 * Moves the tank at the specified index forward one
 	 * @param index 
 	 */
-	public void moveTank(int index) {
-		tanks.get(index).move();
-		lastChange = "move: player " + index;
+	public void moveTank(int playerId) {
+		tanks.get(playerId).move();
+		lastChange = "move: player " + playerId;
 	}
 
-	public void rotateLeft(int index) {
-		tanks.get(index).rotateLeft();
-		lastChange = "left: player " + index;
+	public void rotateLeft(int playerId) {
+		tanks.get(playerId).rotateLeft();
+		lastChange = "left: player " + playerId;
 	}
 
-	public void rotateRight(int index) {
-		tanks.get(index).rotateRight();
-		lastChange = "right: player " + index;
+	public void rotateRight(int playerId) {
+		tanks.get(playerId).rotateRight();
+		lastChange = "right: player " + playerId;
+	}
+
+	public void backward(int playerId) {
+		tanks.get(playerId).backward();
+		lastChange = "back: player " + playerId;
 	}
 	
 	public void shoot(int playerId) {

@@ -85,6 +85,9 @@ public class Player implements Runnable {
 			else if(command.equals("shoot")) {
 				game.shoot(playerId);
 			}
+			else if(command.equals("back")) {
+				game.backward(playerId);
+			}
 			XTankServer.notifyPlayers();
 		}
 	}

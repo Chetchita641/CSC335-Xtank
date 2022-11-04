@@ -72,6 +72,9 @@ public class Client {
 				else if(response.startsWith("right")) {
 					processRight(response.substring(14));
 				}
+				else if(response.startsWith("back")) {
+					processBack(response.substring(13));
+				}
             	game.drawAll(ui);
             } while (in.hasNext());
             /*
@@ -108,6 +111,11 @@ public class Client {
 
 	public void rotateRight() {
 		out.println("right");
+		out.flush();
+	}
+
+	public void backward() {
+		out.println("back");
 		out.flush();
 	}
 	
@@ -163,5 +171,10 @@ public class Client {
 	private void processRight(String rightInfo) {
 		int playerId = Integer.parseInt(rightInfo);
 		game.rotateRight(playerId);
+	}
+
+	private void processBack(String backInfo) {
+		int playerId = Integer.parseInt(backInfo);
+		game.backward(playerId);
 	}
 }

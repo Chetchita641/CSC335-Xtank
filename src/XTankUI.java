@@ -57,19 +57,23 @@ public class XTankUI{
 					/*x += directionX;
 					y += directionY;*/
 					client.move();
-					canvas.redraw();
+					//canvas.redraw();
 				}
 				else if(e.keyCode==SWT.ARROW_LEFT) {
 					client.rotateLeft();
-					canvas.redraw();
+					//canvas.redraw();
 				}
 				else if(e.keyCode==SWT.ARROW_RIGHT) {
 					client.rotateRight();
-					canvas.redraw();
+					//canvas.redraw();
+				}
+				else if(e.keyCode==SWT.ARROW_DOWN) {
+					client.backward();
+					//canvas.redraw();
 				}
 				else if(e.keyCode==SWT.SPACE) {
 					client.shoot();
-					canvas.redraw();
+					//canvas.redraw();
 				}
 			}
 			public void keyReleased(KeyEvent e) {}
