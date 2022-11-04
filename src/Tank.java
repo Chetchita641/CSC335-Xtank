@@ -6,14 +6,14 @@ public class Tank extends Glyph{
 	private int xCord;
 	private int yCord;
 	private int health;
-	private double orientation;
+	private double radians;
 	private int playerId;
 	private boolean isActive;
 	
 	public Tank(int pId, int startX, int startY) {
 		xCord = startX;
 		yCord = startY;
-		orientation = 0;
+		radians = 0;
 		health = 100;
 		isActive = true;
 		playerId = pId;
@@ -21,12 +21,15 @@ public class Tank extends Glyph{
 	
 	@Override
 	public void draw(XTankUI ui) {
-		ui.drawTank(xCord, yCord, orientation);
+		ui.drawTank(xCord, yCord, radians);
 	}
 
 	@Override
 	public void move() {
-		yCord-=10;
+		final double FORWARD = 10;
+
+		xCord += Math.cos(radians)*FORWARD;
+		yCord -= Math.sin(radians)*FORWARD;
 	}
 
 	@Override
@@ -39,11 +42,11 @@ public class Tank extends Glyph{
 	}
 	
 	public void rotateLeft() {
-		orientation += 5;
+		radians += Math.PI/32;
 	}
 	
 	public void rotateRight() {
-		orientation -= 5;
+		radians -= Math.PI/32;
 	}
 	
 	public String toString() {

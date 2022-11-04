@@ -83,13 +83,12 @@ public class XTankUI{
 		display.dispose();		
 	}
 	
-	public void drawTank(int x, int y, double degrees) {
+	public void drawTank(int x, int y, double radians) {
 		Display.getDefault().asyncExec(new Runnable() {
 			 public void run() {
 				final double WIDTH = 20;
 				final double HEIGHT = 40;
 
-				double radians = Math.toRadians(degrees);
 				gc.setBackground(display.getSystemColor(SWT.COLOR_WHITE));
 
 				double ra, rb, rc;
