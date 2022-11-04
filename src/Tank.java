@@ -39,10 +39,10 @@ public class Tank extends Glyph{
 
 	@Override
 	public void move() {
-		final double FORWARD = 0.2;
+		final double FORWARD = 0.05;
 
-		xCord += (int) (Math.cos(radians)*FORWARD*deltaTime);
-		yCord -= (int) (Math.sin(radians)*FORWARD*deltaTime);
+		xCord += Math.cos(radians)*FORWARD*deltaTime;
+		yCord -= Math.sin(radians)*FORWARD*deltaTime;
 	}
 
 	@Override
