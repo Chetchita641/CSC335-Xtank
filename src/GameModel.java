@@ -2,13 +2,20 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.swt.widgets.Display;
+
 public class GameModel implements Serializable {
 	private static GameModel gameModelInstance;
 
 	public String lastChange;
+
+	private long lastTime;
 	
 	private List<Glyph> glyphs;
 	private List<Tank> tanks;
+	private List<Client> clients;
+
+	Thread thread;
 	
 	/**
 	 * Creates a new GameModel
@@ -16,6 +23,9 @@ public class GameModel implements Serializable {
 	private GameModel() {
 		glyphs = new ArrayList<Glyph>();
 		tanks = new ArrayList<Tank>();
+		clients = new ArrayList<Client>();
+		lastTime = System.nanoTime();
+
 	}
 
 	public static GameModel getInstance() {
@@ -29,16 +39,27 @@ public class GameModel implements Serializable {
 		return tanks;
 	}
 
+	public void addClient(Client client) {
+		clients.add(client);
+	}
+
+	public void updateState() {
+		long currentTime = System.nanoTime();
+		double deltaTime = (currentTime-lastTime)/1000000;
+		for (Tank tank : tanks) {
+			tank.increment(deltaTime);
+		}
+		lastTime = currentTime;
+	}
+
 	/**
 	 * Draws every Gylph in the specified XTankUI
 	 * @param ui
 	 */
 	public void drawAll(XTankUI ui) {
-		/*
 		for(Glyph g: glyphs) {
 			g.draw(ui);
 		}
-		*/
 	}
 	
 	/**
@@ -48,6 +69,7 @@ public class GameModel implements Serializable {
 	 */
 	public void addTank(int index) {
 		this.addTank(index, 300, 500);
+
 	}
 	
 	/**
@@ -61,6 +83,7 @@ public class GameModel implements Serializable {
 		Tank t =  new Tank(index, xCord, yCord);
 		tanks.add(index, t);
 		glyphs.add(t);
+		System.out.println("Tank added");
 		lastChange = "add tanks " + t.toString();
 	}
 	 

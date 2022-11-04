@@ -1,7 +1,7 @@
 
 public abstract class Glyph {
 
-	//public abstract void draw(XTankUI ui);
+	public abstract void draw(XTankUI ui);
 	
 	public abstract void move();
 	

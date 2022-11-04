@@ -42,6 +42,10 @@ public class Client {
     public void setUI(XTankUI ui) {
     	this.ui = ui;
     }
+
+	public XTankUI getUI() {
+		return ui;
+	}
     
     /**
      * Starts the game play for this Client
@@ -68,7 +72,7 @@ public class Client {
 				else if(response.startsWith("right")) {
 					processRight(response.substring(14));
 				}
-            	//game.drawAll(ui);
+            	game.drawAll(ui);
             } while (in.hasNext());
             /*
             while(in.available()>0) {

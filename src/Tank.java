@@ -32,6 +32,7 @@ public class Tank extends Glyph{
 		return radians;
 	}
 	
+	@Override
 	public void draw(XTankUI ui) {
 		ui.drawTank(xCord, yCord, radians);
 	}

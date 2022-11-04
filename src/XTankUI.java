@@ -17,14 +17,12 @@ public class XTankUI{
 	private Client client;
 	private GC gc;
 	private GameModel gameModel = GameModel.getInstance();
-	private long lastTime;
 	
 	public void setClient(Client c) {
 		client = c;
 	}
 	
 	public void start(){
-		
 		display = new Display();
 		this.shell = new Shell(display);
 		shell.setText("xtank");
@@ -77,7 +75,6 @@ public class XTankUI{
 			public void keyReleased(KeyEvent e) {}
 		});
 
-		lastTime = System.nanoTime();
 		final int INTERVAL = 10;
 		Runnable runnable = new Runnable() {
 			public void run() {
@@ -96,16 +93,17 @@ public class XTankUI{
 		display.dispose();		
 	}
 
-	private void drawAndAnimate() {
+	public Display getDisplay() {
+		return display;
+	}
+
+	public void drawAndAnimate() {
 		List<Tank> tanks = gameModel.getTanks();
 		for (Tank tank : tanks) {
-			long currentTime = System.nanoTime();
-			double delta = (currentTime-lastTime)/1000000;
-			lastTime = currentTime;
-			tank.increment(delta);
 			drawTank(tank.getXCord(), tank.getYCord(), tank.getRadians());
-			canvas.redraw();
 		}
+		gameModel.updateState();
+		canvas.redraw();
 	}
 	
 	public void drawTank(double x, double y, double radians) {
@@ -143,9 +141,9 @@ public class XTankUI{
 				cy = (int) (rc*Math.sin(cRad)+y); 
 				
 				
-				System.out.println("DEBUG: ax: " + ax + ", ay: " + ay);
-				System.out.println("DEBUG: bx: " + bx + ", by: " + by);
-				System.out.println("DEBUG: cx: " + cx + ", cy: " + cy);
+				//System.out.println("DEBUG: ax: " + ax + ", ay: " + ay);
+				//System.out.println("DEBUG: bx: " + bx + ", by: " + by);
+				//System.out.println("DEBUG: cx: " + cx + ", cy: " + cy);
 				
 				gc.setBackground(display.getSystemColor(SWT.COLOR_WHITE));
 				gc.fillPolygon(new int[] {ax, ay, bx, by, cx, cy});
