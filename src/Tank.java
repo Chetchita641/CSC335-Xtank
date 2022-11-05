@@ -89,8 +89,9 @@ public class Tank extends Glyph{
 
 	}
 	
-	public void shoot() {
-		//TODO
+	public Bullet shoot() {
+		System.out.println("SHHOOT");
+		return new Bullet(xCord, yCord, radians);
 	}
 	
 	public void rotateLeft() {

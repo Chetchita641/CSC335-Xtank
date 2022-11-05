@@ -11,6 +11,7 @@ public class GameModel implements Serializable {
 	
 	private List<Glyph> glyphs;
 	private List<Tank> tanks;
+	private List<Bullet> bullets;
 	private List<Client> clients;
 
 	Thread thread;
@@ -21,6 +22,7 @@ public class GameModel implements Serializable {
 	private GameModel() {
 		glyphs = new ArrayList<Glyph>();
 		tanks = new ArrayList<Tank>();
+		bullets = new ArrayList<Bullet>();
 		clients = new ArrayList<Client>();
 		lastTime = System.nanoTime();
 
@@ -36,6 +38,10 @@ public class GameModel implements Serializable {
 	public List<Tank> getTanks() {
 		return tanks;
 	}
+	
+	public List<Bullet> getBullets(){
+		return bullets;
+	}
 
 	public void addClient(Client client) {
 		clients.add(client);
@@ -48,6 +54,10 @@ public class GameModel implements Serializable {
 		for (Tank tank : tanks) {
 			//System.out.println(";)");
 			tank.update(deltaTime);
+		}
+		for (Bullet bullet : bullets) {
+			//System.out.println(";)");
+			bullet.update(deltaTime);
 		}
 		lastTime = currentTime;
 	}
@@ -120,7 +130,8 @@ public class GameModel implements Serializable {
 	}
 	
 	public synchronized void shoot(int playerId) {
-		tanks.get(playerId).shoot();
+		Bullet bullet = tanks.get(playerId).shoot();
+		bullets.add(bullet);
 		lastChange = "shoot: player " + playerId;
 	}
 	

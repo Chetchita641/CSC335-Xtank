@@ -75,6 +75,9 @@ public class Client {
 				else if(response.startsWith("back")) {
 					processBack(response.substring(13));
 				}
+				else if(response.startsWith("shoot")) {
+					processShoot(response.substring(14));
+				}
             	game.drawAll(ui);
             } while (in.hasNext());
             
@@ -94,7 +97,6 @@ public class Client {
 			}
         }
     }
-
 
 	/**
 	 * Sends command to server this Client's tank
@@ -183,5 +185,10 @@ public class Client {
 	private void processBack(String backInfo) {
 		int playerId = Integer.parseInt(backInfo);
 		game.backward(playerId);
+	}
+	
+	private void processShoot(String shootInfo) {
+		int playerId = Integer.parseInt(shootInfo);
+		game.shoot(playerId);
 	}
 }

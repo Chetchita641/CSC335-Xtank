@@ -107,10 +107,73 @@ public class XTankUI{
 			//drawTank(tank.getXCord(), tank.getYCord(), tank.getRadians());
 			drawTank(tank);
 		}
+		List<Bullet> bullets = gameModel.getBullets();
+		for (Bullet bullet: bullets) {
+			//drawTank(tank.getXCord(), tank.getYCord(), tank.getRadians());
+			drawBullet(bullet);
+		}
 		gameModel.updateState();
 		canvas.redraw();
 	}
 	
+	private void drawBullet(Bullet bullet) {
+		double radians = bullet.getRadians();
+		double x = bullet.getxCord();
+		double y = bullet.getyCord();
+		Display.getDefault().asyncExec(new Runnable() {
+			 public void run() {
+				final double WIDTH = 10;
+				final double HEIGHT = 20;
+
+				gc.setBackground(display.getSystemColor(SWT.COLOR_RED));
+
+				double ra, rb, rc;
+				ra = HEIGHT/2;
+				rb = Math.sqrt(Math.pow(WIDTH/2,2)+Math.pow(HEIGHT/2, 2));
+				rc = rb;
+
+				//System.out.println("DEBUG: ra: " + ra);
+				//System.out.println("DEBUG: rb: " + rb);
+				//System.out.println("DEBUG: rc: " + rc);
+
+				int ax, ay, bx, by, cx, cy;
+
+				double aRad = Math.atan2(0, HEIGHT/2)-radians;
+				double bRad = Math.atan2(WIDTH/2, -HEIGHT/2)-radians;
+				double cRad = Math.atan2(-WIDTH/2, -HEIGHT/2)-radians;
+
+				//System.out.println("DEBUG: aRad: " + aRad);
+				//System.out.println("DEBUG: bRad: " + bRad);
+				//System.out.println("DEBUG: cRad: " + cRad);
+
+				ax = (int) (ra*Math.cos(aRad)+x);
+				ay = (int) (ra*Math.sin(aRad)+y);
+				bx = (int) (rb*Math.cos(bRad)+x);
+				by = (int) (rb*Math.sin(bRad)+y);
+				cx = (int) (rc*Math.cos(cRad)+x);
+				cy = (int) (rc*Math.sin(cRad)+y); 
+				
+				
+				//System.out.println("DEBUG: ax: " + ax + ", ay: " + ay);
+				//System.out.println("DEBUG: bx: " + bx + ", by: " + by);
+				//System.out.println("DEBUG: cx: " + cx + ", cy: " + cy);
+				
+				gc.setBackground(display.getSystemColor(SWT.COLOR_RED));
+				gc.fillPolygon(new int[] {ax, ay, bx, by, cx, cy});
+				
+		
+				/*
+				gc.setBackground(display.getSystemColor(SWT.COLOR_DARK_GREEN));
+				gc.fillRectangle(x, y, 50, 100);
+				gc.setBackground(display.getSystemColor(SWT.COLOR_BLACK));
+				gc.fillOval(x, y+25, 50, 50);
+				gc.setLineWidth(4);
+				gc.drawLine(x+25, y+25, x+25, y-15);
+				*/
+			 }
+			});
+	}
+
 	public void drawTank(Tank tank) {
 		double radians = tank.getRadians();
 		double x = tank.getXCord();
