@@ -34,6 +34,9 @@ public class XTankServer {
 	 * Starts the server. Begins to accept new clients and add them to the game
 	 */
     public void start() {
+    	GameModelRun gmrun = new GameModelRun(game);
+    	Thread gmThread = new Thread(gmrun);
+    	gmThread.start();
         try (ServerSocket listener = new ServerSocket(58901)) {
             System.out.println("XTank Server is Running...");
             ExecutorService pool = Executors.newFixedThreadPool(10);
@@ -58,4 +61,18 @@ public class XTankServer {
     }
 }
 
+class GameModelRun implements Runnable{
+	private GameModel game;
+	
+	public GameModelRun(GameModel g) {
+		game = g;
+	}
+
+	@Override
+	public void run() {
+		while(true) {
+			game.updateState();
+		}
+	}
+}
  

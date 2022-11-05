@@ -17,14 +17,12 @@ public class XTankUI{
 	private Client client;
 	private GC gc;
 	private GameModel gameModel = GameModel.getInstance();
-	private long lastTime;
 	
 	public void setClient(Client c) {
 		client = c;
 	}
 	
 	public void start(){
-		
 		display = new Display();
 		this.shell = new Shell(display);
 		shell.setText("xtank");
@@ -36,7 +34,7 @@ public class XTankUI{
 		gc = new GC(canvas);
 
 		canvas.addPaintListener(event -> {
-			event.gc.fillRectangle(canvas.getBounds());
+			//event.gc.fillRectangle(canvas.getBounds());
 			/*event.gc.setBackground(shell.getDisplay().getSystemColor(SWT.COLOR_DARK_GREEN));
 			event.gc.fillRectangle(x, y, 50, 100);
 			event.gc.setBackground(shell.getDisplay().getSystemColor(SWT.COLOR_BLACK));
@@ -59,25 +57,28 @@ public class XTankUI{
 					/*x += directionX;
 					y += directionY;*/
 					client.move();
-					canvas.redraw();
+					//canvas.redraw();
 				}
 				else if(e.keyCode==SWT.ARROW_LEFT) {
 					client.rotateLeft();
-					canvas.redraw();
+					//canvas.redraw();
 				}
 				else if(e.keyCode==SWT.ARROW_RIGHT) {
 					client.rotateRight();
-					canvas.redraw();
+					//canvas.redraw();
+				}
+				else if(e.keyCode==SWT.ARROW_DOWN) {
+					client.backward();
+					//canvas.redraw();
 				}
 				else if(e.keyCode==SWT.SPACE) {
 					client.shoot();
-					canvas.redraw();
+					//canvas.redraw();
 				}
 			}
 			public void keyReleased(KeyEvent e) {}
 		});
 
-		lastTime = System.nanoTime();
 		final int INTERVAL = 10;
 		Runnable runnable = new Runnable() {
 			public void run() {
@@ -96,19 +97,24 @@ public class XTankUI{
 		display.dispose();		
 	}
 
-	private void drawAndAnimate() {
+	public Display getDisplay() {
+		return display;
+	}
+
+	public void drawAndAnimate() {
 		List<Tank> tanks = gameModel.getTanks();
 		for (Tank tank : tanks) {
-			long currentTime = System.nanoTime();
-			double delta = (currentTime-lastTime)/1000000;
-			lastTime = currentTime;
-			tank.increment(delta);
-			drawTank(tank.getXCord(), tank.getYCord(), tank.getRadians());
-			canvas.redraw();
+			//drawTank(tank.getXCord(), tank.getYCord(), tank.getRadians());
+			drawTank(tank);
 		}
+		gameModel.updateState();
+		canvas.redraw();
 	}
 	
-	public void drawTank(double x, double y, double radians) {
+	public void drawTank(Tank tank) {
+		double radians = tank.getRadians();
+		double x = tank.getXCord();
+		double y = tank.getYCord();
 		Display.getDefault().asyncExec(new Runnable() {
 			 public void run() {
 				final double WIDTH = 20;
@@ -143,12 +149,13 @@ public class XTankUI{
 				cy = (int) (rc*Math.sin(cRad)+y); 
 				
 				
-				System.out.println("DEBUG: ax: " + ax + ", ay: " + ay);
-				System.out.println("DEBUG: bx: " + bx + ", by: " + by);
-				System.out.println("DEBUG: cx: " + cx + ", cy: " + cy);
+				//System.out.println("DEBUG: ax: " + ax + ", ay: " + ay);
+				//System.out.println("DEBUG: bx: " + bx + ", by: " + by);
+				//System.out.println("DEBUG: cx: " + cx + ", cy: " + cy);
 				
 				gc.setBackground(display.getSystemColor(SWT.COLOR_WHITE));
 				gc.fillPolygon(new int[] {ax, ay, bx, by, cx, cy});
+				
 		
 				/*
 				gc.setBackground(display.getSystemColor(SWT.COLOR_DARK_GREEN));
@@ -161,4 +168,58 @@ public class XTankUI{
 			 }
 			});
 	}
+	
+	/*public void drawTank(double x, double y, double radians) {
+		Display.getDefault().asyncExec(new Runnable() {
+			 public void run() {
+				final double WIDTH = 20;
+				final double HEIGHT = 40;
+
+				gc.setBackground(display.getSystemColor(SWT.COLOR_WHITE));
+
+				double ra, rb, rc;
+				ra = HEIGHT/2;
+				rb = Math.sqrt(Math.pow(WIDTH/2,2)+Math.pow(HEIGHT/2, 2));
+				rc = rb;
+
+				//System.out.println("DEBUG: ra: " + ra);
+				//System.out.println("DEBUG: rb: " + rb);
+				//System.out.println("DEBUG: rc: " + rc);
+
+				int ax, ay, bx, by, cx, cy;
+
+				double aRad = Math.atan2(0, HEIGHT/2)-radians;
+				double bRad = Math.atan2(WIDTH/2, -HEIGHT/2)-radians;
+				double cRad = Math.atan2(-WIDTH/2, -HEIGHT/2)-radians;
+
+				//System.out.println("DEBUG: aRad: " + aRad);
+				//System.out.println("DEBUG: bRad: " + bRad);
+				//System.out.println("DEBUG: cRad: " + cRad);
+
+				ax = (int) (ra*Math.cos(aRad)+x);
+				ay = (int) (ra*Math.sin(aRad)+y);
+				bx = (int) (rb*Math.cos(bRad)+x);
+				by = (int) (rb*Math.sin(bRad)+y);
+				cx = (int) (rc*Math.cos(cRad)+x);
+				cy = (int) (rc*Math.sin(cRad)+y); 
+				
+				
+				//System.out.println("DEBUG: ax: " + ax + ", ay: " + ay);
+				//System.out.println("DEBUG: bx: " + bx + ", by: " + by);
+				//System.out.println("DEBUG: cx: " + cx + ", cy: " + cy);
+				
+				gc.setBackground(display.getSystemColor(SWT.COLOR_WHITE));
+				gc.fillPolygon(new int[] {ax, ay, bx, by, cx, cy});
+		
+				/*
+				gc.setBackground(display.getSystemColor(SWT.COLOR_DARK_GREEN));
+				gc.fillRectangle(x, y, 50, 100);
+				gc.setBackground(display.getSystemColor(SWT.COLOR_BLACK));
+				gc.fillOval(x, y+25, 50, 50);
+				gc.setLineWidth(4);
+				gc.drawLine(x+25, y+25, x+25, y-15);
+				*/
+			/* }
+			});
+	}*/
 }

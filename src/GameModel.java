@@ -6,9 +6,14 @@ public class GameModel implements Serializable {
 	private static GameModel gameModelInstance;
 
 	public String lastChange;
+
+	private long lastTime;
 	
 	private List<Glyph> glyphs;
 	private List<Tank> tanks;
+	private List<Client> clients;
+
+	Thread thread;
 	
 	/**
 	 * Creates a new GameModel
@@ -16,6 +21,9 @@ public class GameModel implements Serializable {
 	private GameModel() {
 		glyphs = new ArrayList<Glyph>();
 		tanks = new ArrayList<Tank>();
+		clients = new ArrayList<Client>();
+		lastTime = System.nanoTime();
+
 	}
 
 	public static GameModel getInstance() {
@@ -29,16 +37,29 @@ public class GameModel implements Serializable {
 		return tanks;
 	}
 
+	public void addClient(Client client) {
+		clients.add(client);
+	}
+
+	public synchronized void updateState() {
+		//System.out.println(tanks.size());
+		long currentTime = System.nanoTime();
+		double deltaTime = (double) (currentTime-lastTime)/1000000000;
+		for (Tank tank : tanks) {
+			//System.out.println(";)");
+			tank.update(deltaTime);
+		}
+		lastTime = currentTime;
+	}
+
 	/**
 	 * Draws every Gylph in the specified XTankUI
 	 * @param ui
 	 */
 	public void drawAll(XTankUI ui) {
-		/*
 		for(Glyph g: glyphs) {
 			g.draw(ui);
 		}
-		*/
 	}
 	
 	/**
@@ -46,8 +67,9 @@ public class GameModel implements Serializable {
 	 * of Tanks
 	 * @param index
 	 */
-	public void addTank(int index) {
-		this.addTank(index, 300, 500);
+	public synchronized void addTank(int index) {
+		this.addTank(index, 300, 500, 1, 0, 100);
+
 	}
 	
 	/**
@@ -57,10 +79,19 @@ public class GameModel implements Serializable {
 	 * @param xCord
 	 * @param yCord
 	 */
-	public void addTank(int index, int xCord, int yCord) {
+	public synchronized void addTank(int index, int xCord, int yCord) {
 		Tank t =  new Tank(index, xCord, yCord);
 		tanks.add(index, t);
 		glyphs.add(t);
+		System.out.println("Tank added");
+		lastChange = "add tanks " + t.toString();
+	}
+	
+	public synchronized void addTank(int playerId, double xCord, double yCord, double rads, double velo, int health) {
+		Tank t =  new Tank(playerId, xCord, yCord, rads, velo, health);
+		tanks.add(playerId, t);
+		glyphs.add(t);
+		System.out.println("Tank added");
 		lastChange = "add tanks " + t.toString();
 	}
 	 
@@ -68,22 +99,27 @@ public class GameModel implements Serializable {
 	 * Moves the tank at the specified index forward one
 	 * @param index 
 	 */
-	public void moveTank(int index) {
-		tanks.get(index).move();
-		lastChange = "move: player " + index;
+	public synchronized void moveTank(int playerId) {
+		tanks.get(playerId).move();
+		lastChange = "move: player " + playerId;
 	}
 
-	public void rotateLeft(int index) {
-		tanks.get(index).rotateLeft();
-		lastChange = "left: player " + index;
+	public synchronized void rotateLeft(int playerId) {
+		tanks.get(playerId).rotateLeft();
+		lastChange = "left: player " + playerId;
 	}
 
-	public void rotateRight(int index) {
-		tanks.get(index).rotateRight();
-		lastChange = "right: player " + index;
+	public synchronized void rotateRight(int playerId) {
+		tanks.get(playerId).rotateRight();
+		lastChange = "right: player " + playerId;
+	}
+
+	public synchronized void backward(int playerId) {
+		tanks.get(playerId).backward();
+		lastChange = "back: player " + playerId;
 	}
 	
-	public void shoot(int playerId) {
+	public synchronized void shoot(int playerId) {
 		tanks.get(playerId).shoot();
 		lastChange = "shoot: player " + playerId;
 	}

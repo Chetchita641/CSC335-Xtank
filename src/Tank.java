@@ -1,5 +1,8 @@
 
 public class Tank extends Glyph{
+	private final double ACCELERATION = 2;
+	private final double FRICTION = 1; 
+	private final double MAX_VELOCITY = 100;
 
 	private static final int WIDTH = 50;
 	private static final int HEIGHT = 100;
@@ -10,12 +13,19 @@ public class Tank extends Glyph{
 	private int playerId;
 	private boolean isActive;
 	private double deltaTime;
+	private double velocity;
+
+	public Tank(int pId, double x, double y) {
+		new Tank(pId, x, y, 100, 0, 100);
+	}
 	
-	public Tank(int pId, double startX, double startY) {
-		xCord = startX;
-		yCord = startY;
-		radians = 0;
-		health = 100;
+	public Tank(int pId, double x, double y, double radians, double velocity, int health) {
+		System.out.println("new tank at " + x + ", " + y);
+		this.xCord = x;
+		this.yCord = y;
+		this.radians = radians;
+		this.velocity = velocity;
+		this.health = health;
 		isActive = true;
 		playerId = pId;
 	}
@@ -32,16 +42,27 @@ public class Tank extends Glyph{
 		return radians;
 	}
 	
+	/*@Override
 	public void draw(XTankUI ui) {
 		ui.drawTank(xCord, yCord, radians);
+	}*/
+	
+	@Override
+	public void draw(XTankUI ui) {
+		ui.drawTank(this);
 	}
 
 	@Override
 	public void move() {
-		final double FORWARD = 0.2;
+		velocity += ACCELERATION;
+		velocity = Math.min(velocity, MAX_VELOCITY);
+		update(deltaTime);
+	}
 
-		xCord += (int) (Math.cos(radians)*FORWARD*deltaTime);
-		yCord -= (int) (Math.sin(radians)*FORWARD*deltaTime);
+	public void backward() {
+		velocity -= ACCELERATION;
+		velocity = Math.max(velocity, -MAX_VELOCITY);
+		update(deltaTime);
 	}
 
 	@Override
@@ -50,10 +71,22 @@ public class Tank extends Glyph{
 	}
 
 	@Override
-	public void increment(double deltaTime) {
-		System.out.println("DEBUG: deltaTime: " + deltaTime);
+	public void update(double deltaTime) {
 		this.deltaTime = deltaTime;
-		move();
+		if (velocity > 0) {
+			velocity -= FRICTION*deltaTime;
+			velocity = Math.max(velocity, 0);
+		}
+		else if (velocity < 0) {
+			velocity += FRICTION*deltaTime;
+			velocity = Math.min(velocity, 0);
+		}
+	
+		this.xCord += Math.cos(radians)*velocity*deltaTime;
+		this.yCord -= Math.sin(radians)*velocity*deltaTime;
+		//System.out.println("rad " + radians + " velo " + velocity + " d time " + deltaTime);
+		//System.out.println("updated tank " + xCord + ", " + yCord);
+
 	}
 	
 	public void shoot() {
@@ -69,6 +102,6 @@ public class Tank extends Glyph{
 	}
 	
 	public String toString() {
-		return "(" + playerId + "," + (int) xCord + "," + (int) yCord + ")";
+		return String.format("(%s,%f,%f,%f,%f,%d)", playerId, xCord, yCord, radians, velocity, health);
 	}
 }

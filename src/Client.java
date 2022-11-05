@@ -42,6 +42,10 @@ public class Client {
     public void setUI(XTankUI ui) {
     	this.ui = ui;
     }
+
+	public XTankUI getUI() {
+		return ui;
+	}
     
     /**
      * Starts the game play for this Client
@@ -68,7 +72,10 @@ public class Client {
 				else if(response.startsWith("right")) {
 					processRight(response.substring(14));
 				}
-            	//game.drawAll(ui);
+				else if(response.startsWith("back")) {
+					processBack(response.substring(13));
+				}
+            	game.drawAll(ui);
             } while (in.hasNext());
             
             /*while(in.available()>0) {
@@ -106,6 +113,11 @@ public class Client {
 		out.println("right");
 		out.flush();
 	}
+
+	public void backward() {
+		out.println("back");
+		out.flush();
+	}
 	
 	/**
 	 * Sends command to server to shoot from this Client's tank
@@ -131,12 +143,19 @@ public class Client {
 			else {
 				int first = tanksInfo.indexOf(",", i);
 				int second = tanksInfo.indexOf(",", first+1);
-				int third = tanksInfo.indexOf(")", second);
+				int third = tanksInfo.indexOf(",", second+1);
+				int fourth = tanksInfo.indexOf(",", third+1);
+				int fifth = tanksInfo.indexOf(",", fourth+1);
+				int sixth = tanksInfo.indexOf(")", fifth);
 				int playerId = Integer.parseInt(tanksInfo.substring(i, first));
-				int xCord = Integer.parseInt(tanksInfo.substring(first+1, second));
-				int yCord = Integer.parseInt(tanksInfo.substring(second+1, third));
-				game.addTank(playerId, xCord, yCord);
-				i = third+1;
+				double xCord = Double.parseDouble(tanksInfo.substring(first+1, second));
+				double yCord = Double.parseDouble(tanksInfo.substring(second+1, third));
+				double rads = Double.parseDouble(tanksInfo.substring(third+1, fourth));
+				double velo = Double.parseDouble(tanksInfo.substring(fourth+1, fifth));
+				int health = Integer.parseInt(tanksInfo.substring(fifth+1, sixth));
+
+				game.addTank(playerId, xCord, yCord, rads, velo, health);
+				i = sixth+1;
 			}
 		}
 	}
@@ -159,5 +178,10 @@ public class Client {
 	private void processRight(String rightInfo) {
 		int playerId = Integer.parseInt(rightInfo);
 		game.rotateRight(playerId);
+	}
+
+	private void processBack(String backInfo) {
+		int playerId = Integer.parseInt(backInfo);
+		game.backward(playerId);
 	}
 }

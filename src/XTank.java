@@ -7,6 +7,7 @@ public class XTank {
     	//String name = s.nextLine();
 		String name = "Bob";
     	Client client = null;
+		GameModel gameModel = GameModel.getInstance();
 		try {
 			client = new Client("127.0.0.1", name);
 		} catch (Exception e) {
@@ -21,6 +22,8 @@ public class XTank {
     	Thread uiThread = new Thread(ur);
     	uiThread.start();
     	clientThread.start();
+
+		gameModel.addClient(client);
     	
     	s.close();
 	}
