@@ -7,6 +7,7 @@ import org.eclipse.swt.widgets.*;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.List;
 
 public class XTankUI{
 	
@@ -15,6 +16,8 @@ public class XTankUI{
 	private Shell shell;
 	private Client client;
 	private GC gc;
+	private GameModel gameModel = GameModel.getInstance();
+	private long lastTime;
 	
 	public void setClient(Client c) {
 		client = c;
@@ -74,16 +77,38 @@ public class XTankUI{
 			public void keyReleased(KeyEvent e) {}
 		});
 
-	
+		lastTime = System.nanoTime();
+		final int INTERVAL = 10;
+		Runnable runnable = new Runnable() {
+			public void run() {
+				drawAndAnimate();
+				display.timerExec(INTERVAL, this);
+			}
+		};
+		display.timerExec(INTERVAL, runnable);
+
 		shell.open();
-		while (!shell.isDisposed()) 
+		while (!shell.isDisposed()) {
 			if (!display.readAndDispatch())
 				display.sleep();
+		} 
 
 		display.dispose();		
 	}
+
+	private void drawAndAnimate() {
+		List<Tank> tanks = gameModel.getTanks();
+		for (Tank tank : tanks) {
+			long currentTime = System.nanoTime();
+			double delta = (currentTime-lastTime)/1000000;
+			lastTime = currentTime;
+			tank.increment(delta);
+			drawTank(tank.getXCord(), tank.getYCord(), tank.getRadians());
+			canvas.redraw();
+		}
+	}
 	
-	public void drawTank(int x, int y, double radians) {
+	public void drawTank(double x, double y, double radians) {
 		Display.getDefault().asyncExec(new Runnable() {
 			 public void run() {
 				final double WIDTH = 20;
@@ -112,10 +137,10 @@ public class XTankUI{
 
 				ax = (int) (ra*Math.cos(aRad)+x);
 				ay = (int) (ra*Math.sin(aRad)+y);
-				bx = (int) (rb*Math.cos(bRad))+x;
-				by = (int) (rb*Math.sin(bRad))+y;
-				cx = (int) (rc*Math.cos(cRad))+x;
-				cy = (int) (rc*Math.sin(cRad))+y; 
+				bx = (int) (rb*Math.cos(bRad)+x);
+				by = (int) (rb*Math.sin(bRad)+y);
+				cx = (int) (rc*Math.cos(cRad)+x);
+				cy = (int) (rc*Math.sin(cRad)+y); 
 				
 				
 				System.out.println("DEBUG: ax: " + ax + ", ay: " + ay);

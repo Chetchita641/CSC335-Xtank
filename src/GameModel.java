@@ -3,6 +3,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GameModel implements Serializable {
+	private static GameModel gameModelInstance;
+
 	public String lastChange;
 	
 	private List<Glyph> glyphs;
@@ -11,19 +13,32 @@ public class GameModel implements Serializable {
 	/**
 	 * Creates a new GameModel
 	 */
-	public GameModel() {
+	private GameModel() {
 		glyphs = new ArrayList<Glyph>();
 		tanks = new ArrayList<Tank>();
 	}
-	
+
+	public static GameModel getInstance() {
+		if (gameModelInstance == null) {
+			gameModelInstance = new GameModel();
+		}
+		return gameModelInstance;
+	}
+
+	public List<Tank> getTanks() {
+		return tanks;
+	}
+
 	/**
 	 * Draws every Gylph in the specified XTankUI
 	 * @param ui
 	 */
 	public void drawAll(XTankUI ui) {
+		/*
 		for(Glyph g: glyphs) {
 			g.draw(ui);
 		}
+		*/
 	}
 	
 	/**

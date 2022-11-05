@@ -15,7 +15,7 @@ public class XTankServer {
 	 */
 	private XTankServer() {
 		players = new ArrayList<Player>();
-    	game = new GameModel();
+    	game = GameModel.getInstance();
 	}
 	
 	/**
