@@ -80,11 +80,6 @@ public class Client {
 				}
             	game.drawAll(ui);
             } while (in.hasNext());
-            
-            /*while(in.available()>0) {
-            	System.out.println(((ObjectInputStream) in).readObject());
-            }*/
-            
         } 
         catch (Exception e) {
             e.printStackTrace();

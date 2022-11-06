@@ -12,7 +12,7 @@ public class GameModel implements Serializable {
 	private List<Glyph> glyphs;
 	private List<Tank> tanks;
 	private List<Bullet> bullets;
-	private List<Client> clients;
+	private List<Obstacle> obstacles;
 
 	Thread thread;
 	
@@ -23,9 +23,13 @@ public class GameModel implements Serializable {
 		glyphs = new ArrayList<Glyph>();
 		tanks = new ArrayList<Tank>();
 		bullets = new ArrayList<Bullet>();
-		clients = new ArrayList<Client>();
 		lastTime = System.nanoTime();
-
+		obstacles =  new ArrayList<Obstacle>();
+		
+		// test obstacles
+		obstacles.add(new Obstacle(5,5,25,25));
+		obstacles.add(new Obstacle(150,200,25,25));
+		obstacles.add(new Obstacle(25,50,25,25));
 	}
 
 	public static GameModel getInstance() {
@@ -42,21 +46,18 @@ public class GameModel implements Serializable {
 	public List<Bullet> getBullets(){
 		return bullets;
 	}
-
-	public void addClient(Client client) {
-		clients.add(client);
+	
+	public List<Obstacle> getObstacles(){
+		return obstacles;
 	}
 
 	public synchronized void updateState() {
-		//System.out.println(tanks.size());
 		long currentTime = System.nanoTime();
 		double deltaTime = (double) (currentTime-lastTime)/1000000000;
 		for (Tank tank : tanks) {
-			//System.out.println(";)");
 			tank.update(deltaTime);
 		}
 		for (Bullet bullet : bullets) {
-			//System.out.println(";)");
 			bullet.update(deltaTime);
 		}
 		lastTime = currentTime;
@@ -93,7 +94,6 @@ public class GameModel implements Serializable {
 		Tank t =  new Tank(index, xCord, yCord);
 		tanks.add(index, t);
 		glyphs.add(t);
-		System.out.println("Tank added");
 		lastChange = "add tanks " + t.toString();
 	}
 	
@@ -101,7 +101,6 @@ public class GameModel implements Serializable {
 		Tank t =  new Tank(playerId, xCord, yCord, rads, velo, health);
 		tanks.add(playerId, t);
 		glyphs.add(t);
-		System.out.println("Tank added");
 		lastChange = "add tanks " + t.toString();
 	}
 	 

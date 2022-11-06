@@ -8,6 +8,7 @@ public class Bullet extends Glyph {
 	private double deltaTime;
 	private double velocity;
 	
+	
 	public Bullet(double x, double y, double r) {
 		xCord = x;
 		yCord = y;
@@ -60,5 +61,4 @@ public class Bullet extends Glyph {
 	public double getRadians() {
 		return radians;
 	}
-
 }

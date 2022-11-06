@@ -81,6 +81,7 @@ public class Tank extends Glyph{
 			velocity += FRICTION*deltaTime;
 			velocity = Math.min(velocity, 0);
 		}
+		
 	
 		this.xCord += Math.cos(radians)*velocity*deltaTime;
 		this.yCord -= Math.sin(radians)*velocity*deltaTime;

@@ -58,11 +58,6 @@ public class Player implements Runnable {
 	 * Updates this Player's client with changes in the GameModel
 	 */
 	public void update() {
-		/*try {
-			output.writeObject(game);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}*/
 		output.println(game.getLastChange());
 		output.flush();
 	}
@@ -71,7 +66,6 @@ public class Player implements Runnable {
 	 * Runs a loop to continuously recieve and process commands from the client
 	 */
 	private void processCommands() {
-		System.out.println("going to process commands");
 		while (input.hasNextLine()) {
 			String command = input.nextLine();
 			System.out.println("received command " + command);

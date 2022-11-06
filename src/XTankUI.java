@@ -7,6 +7,7 @@ import org.eclipse.swt.widgets.*;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class XTankUI{
@@ -28,19 +29,12 @@ public class XTankUI{
 		shell.setText("xtank");
 		shell.setLayout(new FillLayout());
 
-		canvas = new Canvas(shell, SWT.NO_REDRAW_RESIZE);
+		canvas = new Canvas(shell, SWT.NO_REDRAW_RESIZE | SWT.DOUBLE_BUFFERED);
 		canvas.setBackground(display.getSystemColor(SWT.COLOR_BLACK));
 
 		gc = new GC(canvas);
 
 		canvas.addPaintListener(event -> {
-			//event.gc.fillRectangle(canvas.getBounds());
-			/*event.gc.setBackground(shell.getDisplay().getSystemColor(SWT.COLOR_DARK_GREEN));
-			event.gc.fillRectangle(x, y, 50, 100);
-			event.gc.setBackground(shell.getDisplay().getSystemColor(SWT.COLOR_BLACK));
-			event.gc.fillOval(x, y+25, 50, 50);
-			event.gc.setLineWidth(4);
-			event.gc.drawLine(x+25, y+25, x+25, y-15);*/
 		});	
 
 		canvas.addMouseListener(new MouseListener() {
@@ -54,26 +48,19 @@ public class XTankUI{
 			public void keyPressed(KeyEvent e) {
 				// update tank location
 				if(e.keyCode==SWT.ARROW_UP) {
-					/*x += directionX;
-					y += directionY;*/
 					client.move();
-					//canvas.redraw();
 				}
 				else if(e.keyCode==SWT.ARROW_LEFT) {
 					client.rotateLeft();
-					//canvas.redraw();
 				}
 				else if(e.keyCode==SWT.ARROW_RIGHT) {
 					client.rotateRight();
-					//canvas.redraw();
 				}
 				else if(e.keyCode==SWT.ARROW_DOWN) {
 					client.backward();
-					//canvas.redraw();
 				}
 				else if(e.keyCode==SWT.SPACE) {
 					client.shoot();
-					//canvas.redraw();
 				}
 			}
 			public void keyReleased(KeyEvent e) {}
@@ -104,13 +91,15 @@ public class XTankUI{
 	public void drawAndAnimate() {
 		List<Tank> tanks = gameModel.getTanks();
 		for (Tank tank : tanks) {
-			//drawTank(tank.getXCord(), tank.getYCord(), tank.getRadians());
 			drawTank(tank);
 		}
 		List<Bullet> bullets = gameModel.getBullets();
 		for (Bullet bullet: bullets) {
-			//drawTank(tank.getXCord(), tank.getYCord(), tank.getRadians());
 			drawBullet(bullet);
+		}
+		
+		for(Obstacle obstacle : gameModel.getObstacles()) {
+			obstacle.draw(this);
 		}
 		gameModel.updateState();
 		canvas.redraw();
@@ -122,54 +111,9 @@ public class XTankUI{
 		double y = bullet.getyCord();
 		Display.getDefault().asyncExec(new Runnable() {
 			 public void run() {
-				final double WIDTH = 10;
-				final double HEIGHT = 20;
-
+				int[] cords = calcTriangleCords(x , y, radians, 10, 20);
 				gc.setBackground(display.getSystemColor(SWT.COLOR_RED));
-
-				double ra, rb, rc;
-				ra = HEIGHT/2;
-				rb = Math.sqrt(Math.pow(WIDTH/2,2)+Math.pow(HEIGHT/2, 2));
-				rc = rb;
-
-				//System.out.println("DEBUG: ra: " + ra);
-				//System.out.println("DEBUG: rb: " + rb);
-				//System.out.println("DEBUG: rc: " + rc);
-
-				int ax, ay, bx, by, cx, cy;
-
-				double aRad = Math.atan2(0, HEIGHT/2)-radians;
-				double bRad = Math.atan2(WIDTH/2, -HEIGHT/2)-radians;
-				double cRad = Math.atan2(-WIDTH/2, -HEIGHT/2)-radians;
-
-				//System.out.println("DEBUG: aRad: " + aRad);
-				//System.out.println("DEBUG: bRad: " + bRad);
-				//System.out.println("DEBUG: cRad: " + cRad);
-
-				ax = (int) (ra*Math.cos(aRad)+x);
-				ay = (int) (ra*Math.sin(aRad)+y);
-				bx = (int) (rb*Math.cos(bRad)+x);
-				by = (int) (rb*Math.sin(bRad)+y);
-				cx = (int) (rc*Math.cos(cRad)+x);
-				cy = (int) (rc*Math.sin(cRad)+y); 
-				
-				
-				//System.out.println("DEBUG: ax: " + ax + ", ay: " + ay);
-				//System.out.println("DEBUG: bx: " + bx + ", by: " + by);
-				//System.out.println("DEBUG: cx: " + cx + ", cy: " + cy);
-				
-				gc.setBackground(display.getSystemColor(SWT.COLOR_RED));
-				gc.fillPolygon(new int[] {ax, ay, bx, by, cx, cy});
-				
-		
-				/*
-				gc.setBackground(display.getSystemColor(SWT.COLOR_DARK_GREEN));
-				gc.fillRectangle(x, y, 50, 100);
-				gc.setBackground(display.getSystemColor(SWT.COLOR_BLACK));
-				gc.fillOval(x, y+25, 50, 50);
-				gc.setLineWidth(4);
-				gc.drawLine(x+25, y+25, x+25, y-15);
-				*/
+				gc.fillPolygon(cords);
 			 }
 			});
 	}
@@ -180,109 +124,49 @@ public class XTankUI{
 		double y = tank.getYCord();
 		Display.getDefault().asyncExec(new Runnable() {
 			 public void run() {
-				final double WIDTH = 20;
-				final double HEIGHT = 40;
-
+				int[] cords = calcTriangleCords(x, y, radians, 20, 40);
 				gc.setBackground(display.getSystemColor(SWT.COLOR_WHITE));
-
-				double ra, rb, rc;
-				ra = HEIGHT/2;
-				rb = Math.sqrt(Math.pow(WIDTH/2,2)+Math.pow(HEIGHT/2, 2));
-				rc = rb;
-
-				//System.out.println("DEBUG: ra: " + ra);
-				//System.out.println("DEBUG: rb: " + rb);
-				//System.out.println("DEBUG: rc: " + rc);
-
-				int ax, ay, bx, by, cx, cy;
-
-				double aRad = Math.atan2(0, HEIGHT/2)-radians;
-				double bRad = Math.atan2(WIDTH/2, -HEIGHT/2)-radians;
-				double cRad = Math.atan2(-WIDTH/2, -HEIGHT/2)-radians;
-
-				//System.out.println("DEBUG: aRad: " + aRad);
-				//System.out.println("DEBUG: bRad: " + bRad);
-				//System.out.println("DEBUG: cRad: " + cRad);
-
-				ax = (int) (ra*Math.cos(aRad)+x);
-				ay = (int) (ra*Math.sin(aRad)+y);
-				bx = (int) (rb*Math.cos(bRad)+x);
-				by = (int) (rb*Math.sin(bRad)+y);
-				cx = (int) (rc*Math.cos(cRad)+x);
-				cy = (int) (rc*Math.sin(cRad)+y); 
-				
-				
-				//System.out.println("DEBUG: ax: " + ax + ", ay: " + ay);
-				//System.out.println("DEBUG: bx: " + bx + ", by: " + by);
-				//System.out.println("DEBUG: cx: " + cx + ", cy: " + cy);
-				
-				gc.setBackground(display.getSystemColor(SWT.COLOR_WHITE));
-				gc.fillPolygon(new int[] {ax, ay, bx, by, cx, cy});
-				
-		
-				/*
-				gc.setBackground(display.getSystemColor(SWT.COLOR_DARK_GREEN));
-				gc.fillRectangle(x, y, 50, 100);
-				gc.setBackground(display.getSystemColor(SWT.COLOR_BLACK));
-				gc.fillOval(x, y+25, 50, 50);
-				gc.setLineWidth(4);
-				gc.drawLine(x+25, y+25, x+25, y-15);
-				*/
-			 }
+				gc.fillPolygon(cords);
+			  }
 			});
 	}
 	
-	/*public void drawTank(double x, double y, double radians) {
+	private int[] calcTriangleCords(double x, double y,
+			double radians, double width, double height){
+		double ra, rb, rc;
+		ra = height/2;
+		rb = Math.sqrt(Math.pow(width/2,2)+Math.pow(height/2, 2));
+		rc = rb;
+
+		int ax, ay, bx, by, cx, cy;
+
+		double aRad = Math.atan2(0, height/2)-radians;
+		double bRad = Math.atan2(width/2, -height/2)-radians;
+		double cRad = Math.atan2(-width/2, -height/2)-radians;
+
+
+		ax = (int) (ra*Math.cos(aRad)+x);
+		ay = (int) (ra*Math.sin(aRad)+y);
+		bx = (int) (rb*Math.cos(bRad)+x);
+		by = (int) (rb*Math.sin(bRad)+y);
+		cx = (int) (rc*Math.cos(cRad)+x);
+		cy = (int) (rc*Math.sin(cRad)+y); 
+		
+		int[] cords = {ax, ay, bx, by, cx, cy};
+	
+		return cords;
+	}
+
+	public void drawObstacle(Obstacle obstacle) {
+		int x = obstacle.getXCord();
+		int y = obstacle.getYCord();
+		int width = obstacle.getWidth();
+		int height = obstacle.getHeight();
 		Display.getDefault().asyncExec(new Runnable() {
 			 public void run() {
-				final double WIDTH = 20;
-				final double HEIGHT = 40;
-
-				gc.setBackground(display.getSystemColor(SWT.COLOR_WHITE));
-
-				double ra, rb, rc;
-				ra = HEIGHT/2;
-				rb = Math.sqrt(Math.pow(WIDTH/2,2)+Math.pow(HEIGHT/2, 2));
-				rc = rb;
-
-				//System.out.println("DEBUG: ra: " + ra);
-				//System.out.println("DEBUG: rb: " + rb);
-				//System.out.println("DEBUG: rc: " + rc);
-
-				int ax, ay, bx, by, cx, cy;
-
-				double aRad = Math.atan2(0, HEIGHT/2)-radians;
-				double bRad = Math.atan2(WIDTH/2, -HEIGHT/2)-radians;
-				double cRad = Math.atan2(-WIDTH/2, -HEIGHT/2)-radians;
-
-				//System.out.println("DEBUG: aRad: " + aRad);
-				//System.out.println("DEBUG: bRad: " + bRad);
-				//System.out.println("DEBUG: cRad: " + cRad);
-
-				ax = (int) (ra*Math.cos(aRad)+x);
-				ay = (int) (ra*Math.sin(aRad)+y);
-				bx = (int) (rb*Math.cos(bRad)+x);
-				by = (int) (rb*Math.sin(bRad)+y);
-				cx = (int) (rc*Math.cos(cRad)+x);
-				cy = (int) (rc*Math.sin(cRad)+y); 
-				
-				
-				//System.out.println("DEBUG: ax: " + ax + ", ay: " + ay);
-				//System.out.println("DEBUG: bx: " + bx + ", by: " + by);
-				//System.out.println("DEBUG: cx: " + cx + ", cy: " + cy);
-				
-				gc.setBackground(display.getSystemColor(SWT.COLOR_WHITE));
-				gc.fillPolygon(new int[] {ax, ay, bx, by, cx, cy});
-		
-				/*
-				gc.setBackground(display.getSystemColor(SWT.COLOR_DARK_GREEN));
-				gc.fillRectangle(x, y, 50, 100);
-				gc.setBackground(display.getSystemColor(SWT.COLOR_BLACK));
-				gc.fillOval(x, y+25, 50, 50);
-				gc.setLineWidth(4);
-				gc.drawLine(x+25, y+25, x+25, y-15);
-				*/
-			/* }
-			});
-	}*/
+				gc.setBackground(display.getSystemColor(SWT.COLOR_YELLOW));
+				gc.fillRectangle(x, y, width, height);
+			 }
+		});
+	}
 }

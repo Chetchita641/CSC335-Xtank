@@ -21,10 +21,7 @@ public class XTank {
     	Thread clientThread = new Thread(cr);
     	Thread uiThread = new Thread(ur);
     	uiThread.start();
-    	clientThread.start();
-
-		gameModel.addClient(client);
-    	
+    	clientThread.start();    	
     	s.close();
 	}
 }

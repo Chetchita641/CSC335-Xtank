@@ -8,5 +8,4 @@ public abstract class Glyph {
 	public abstract boolean intersects(int x, int y);
 	
 	public abstract void update(double deltaTime);
-
 }
