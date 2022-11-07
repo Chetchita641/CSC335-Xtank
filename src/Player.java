@@ -46,6 +46,7 @@ public class Player implements Runnable {
 			//output.writeObject("hi " + name);
 			output.println("hi " + name);
 			output.println("add tanks " + game.listTanks());
+			output.println("your id: " + playerId);
 			output.flush();
 			processCommands();
 		} 

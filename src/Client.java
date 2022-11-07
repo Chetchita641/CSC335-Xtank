@@ -78,6 +78,9 @@ public class Client {
 				else if(response.startsWith("shoot")) {
 					processShoot(response.substring(14));
 				}
+				else if(response.startsWith("your id")) {
+					processID(response.substring(9));
+				}
             	game.drawAll(ui);
             } while (in.hasNext());
         } 
@@ -185,5 +188,10 @@ public class Client {
 	private void processShoot(String shootInfo) {
 		int playerId = Integer.parseInt(shootInfo);
 		game.shoot(playerId);
+	}
+	
+	private void processID(String idInfo) {
+		int playerId = Integer.parseInt(idInfo);
+		game.setAsClient(playerId);
 	}
 }

@@ -14,6 +14,7 @@ public class Tank extends Glyph{
 	private boolean isActive;
 	private double deltaTime;
 	private double velocity;
+	private boolean isClient;
 
 	public Tank(int pId, double x, double y) {
 		new Tank(pId, x, y, 100, 0, 100);
@@ -105,5 +106,24 @@ public class Tank extends Glyph{
 	
 	public String toString() {
 		return String.format("(%s,%f,%f,%f,%f,%d)", playerId, xCord, yCord, radians, velocity, health);
+	}
+
+	public String getID() {
+		return ""+playerId;
+	}
+	
+	/**
+	 * Marks this tank as the cleint's
+	 */
+	public void setClientTank() {
+		isClient = true;
+	}
+	
+	/**
+	 * Returns true if this tank is the client's tank
+	 * @return
+	 */
+	public boolean isClientTank() {
+		return isClient;
 	}
 }
