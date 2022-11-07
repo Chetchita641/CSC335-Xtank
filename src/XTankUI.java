@@ -123,10 +123,21 @@ public class XTankUI{
 		double x = tank.getXCord();
 		double y = tank.getYCord();
 		Display.getDefault().asyncExec(new Runnable() {
-			 public void run() {
-				int[] cords = calcTriangleCords(x, y, radians, 20, 40);
-				gc.setBackground(display.getSystemColor(SWT.COLOR_WHITE));
+			public void run() {
+				Color tankColor;
+				if(tank.isClientTank()) {
+					tankColor = display.getSystemColor(SWT.COLOR_GREEN);
+				}
+				else {
+					tankColor = display.getSystemColor(SWT.COLOR_WHITE);
+				}
+				int[] cords = calcTriangleCords(x, y, radians, 30, 50);
+				gc.setBackground(tankColor);
 				gc.fillPolygon(cords);
+				gc.setBackground(display.getSystemColor(SWT.COLOR_BLACK));
+				gc.setForeground(tankColor);
+				gc.setFont(new Font(display, new FontData( "Arial", 10, SWT.NONE)));
+				gc.drawText(tank.getID(), (int)x, (int)y-40);
 			  }
 			});
 	}

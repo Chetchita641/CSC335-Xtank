@@ -153,4 +153,12 @@ public class GameModel implements Serializable {
 	public String getLastChange() {
 		return lastChange;
 	}
+
+	/**
+	 * Sets which tank is the client's
+	 * @param playerId
+	 */
+	public void setAsClient(int playerId) {
+		tanks.get(playerId).setClientTank();
+	}
 }
