@@ -145,7 +145,7 @@ public class GameModel implements Serializable {
 	}
 
 	public synchronized void explode() {
-		Explosion explosion = new Explosion(100, 100, 20000);
+		Explosion explosion = new Explosion(100, 100, 10);
 		explosions.add(explosion);
 		lastChange = "explode: (100, 100)";
 	}

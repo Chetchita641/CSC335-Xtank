@@ -1,8 +1,8 @@
 import java.util.Random;
 
 public class Particle extends Glyph {
-    private final double MAX_VELOCITY = 10;
-    private final double FRICTION = 0.1;
+    private final double MAX_VELOCITY = 20;
+    private final double FRICTION = 0.5;
 
     private double xCord;
     private double yCord;

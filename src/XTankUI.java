@@ -18,6 +18,8 @@ public class XTankUI{
 	private Client client;
 	private GC gc;
 	private GameModel gameModel = GameModel.getInstance();
+	private int xLimit = 1500;
+	private int yLimit = 900;
 	
 	public void setClient(Client c) {
 		client = c;
@@ -26,6 +28,7 @@ public class XTankUI{
 	public void start(){
 		display = new Display();
 		this.shell = new Shell(display);
+		shell.setSize(xLimit, yLimit);
 		shell.setText("xtank");
 		shell.setLayout(new FillLayout());
 
@@ -108,7 +111,7 @@ public class XTankUI{
 		for (Explosion explosion : gameModel.getExplosions()) {
 			explosion.draw(this);
 		}
-		//gameModel.updateState();
+		gameModel.updateState();
 		canvas.redraw();
 	}
 	
@@ -151,6 +154,10 @@ public class XTankUI{
 	
 	private int[] calcTriangleCords(double x, double y,
 			double radians, double width, double height){
+
+		x = Math.floorMod((int) x, xLimit);
+		y = Math.floorMod((int) y, yLimit);
+	
 		double ra, rb, rc;
 		ra = height/2;
 		rb = Math.sqrt(Math.pow(width/2,2)+Math.pow(height/2, 2));
@@ -161,7 +168,6 @@ public class XTankUI{
 		double aRad = Math.atan2(0, height/2)-radians;
 		double bRad = Math.atan2(width/2, -height/2)-radians;
 		double cRad = Math.atan2(-width/2, -height/2)-radians;
-
 
 		ax = (int) (ra*Math.cos(aRad)+x);
 		ay = (int) (ra*Math.sin(aRad)+y);
