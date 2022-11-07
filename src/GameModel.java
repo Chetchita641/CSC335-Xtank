@@ -13,6 +13,7 @@ public class GameModel implements Serializable {
 	private List<Tank> tanks;
 	private List<Bullet> bullets;
 	private List<Obstacle> obstacles;
+	private List<Explosion> explosions;
 
 	Thread thread;
 	
@@ -25,6 +26,7 @@ public class GameModel implements Serializable {
 		bullets = new ArrayList<Bullet>();
 		lastTime = System.nanoTime();
 		obstacles =  new ArrayList<Obstacle>();
+		explosions = new ArrayList<Explosion>();
 		
 		// test obstacles
 		obstacles.add(new Obstacle(5,5,25,25));
@@ -51,14 +53,22 @@ public class GameModel implements Serializable {
 		return obstacles;
 	}
 
+	public List<Explosion> getExplosions() {
+		return explosions;
+	}
+
 	public synchronized void updateState() {
 		long currentTime = System.nanoTime();
 		double deltaTime = (double) (currentTime-lastTime)/1000000000;
+
 		for (Tank tank : tanks) {
 			tank.update(deltaTime);
 		}
 		for (Bullet bullet : bullets) {
 			bullet.update(deltaTime);
+		}
+		for (Explosion explosion : explosions) {
+			explosion.update(deltaTime);
 		}
 		lastTime = currentTime;
 	}
@@ -132,6 +142,12 @@ public class GameModel implements Serializable {
 		Bullet bullet = tanks.get(playerId).shoot();
 		bullets.add(bullet);
 		lastChange = "shoot: player " + playerId;
+	}
+
+	public synchronized void explode() {
+		Explosion explosion = new Explosion(100, 100, 20000);
+		explosions.add(explosion);
+		lastChange = "explode: (100, 100)";
 	}
 	
 	/**

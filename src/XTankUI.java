@@ -62,6 +62,9 @@ public class XTankUI{
 				else if(e.keyCode==SWT.SPACE) {
 					client.shoot();
 				}
+				else if(e.keyCode==SWT.BS) {
+					gameModel.explode();
+				}
 			}
 			public void keyReleased(KeyEvent e) {}
 		});
@@ -101,7 +104,11 @@ public class XTankUI{
 		for(Obstacle obstacle : gameModel.getObstacles()) {
 			obstacle.draw(this);
 		}
-		gameModel.updateState();
+
+		for (Explosion explosion : gameModel.getExplosions()) {
+			explosion.draw(this);
+		}
+		//gameModel.updateState();
 		canvas.redraw();
 	}
 	
@@ -168,5 +175,21 @@ public class XTankUI{
 				gc.fillRectangle(x, y, width, height);
 			 }
 		});
+	}
+
+	public void drawExplosion(Explosion explosion) {
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				gc.setBackground(display.getSystemColor(SWT.COLOR_RED));
+				for (Particle p : explosion.getParticles()) {
+					int x = (int) p.getXCord();
+					int y = (int) p.getYCord();
+
+					gc.drawRectangle(x, y, 2, 2);
+				}
+
+			}
+		});
+
 	}
 }

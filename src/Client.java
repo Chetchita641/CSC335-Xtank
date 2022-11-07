@@ -115,7 +115,7 @@ public class Client {
 		out.println("back");
 		out.flush();
 	}
-	
+
 	/**
 	 * Sends command to server to shoot from this Client's tank
 	 */
