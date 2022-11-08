@@ -67,7 +67,7 @@ public class Tank extends Glyph{
 	}
 
 	@Override
-	public boolean intersects(int x, int y) {
+	public boolean intersects(double x, double y) {
 		return (x>=xCord&&x<=(xCord+WIDTH))&&(y>=yCord&&y<=(yCord+HEIGHT));
 	}
 
@@ -86,14 +86,10 @@ public class Tank extends Glyph{
 	
 		this.xCord += Math.cos(radians)*velocity*deltaTime;
 		this.yCord -= Math.sin(radians)*velocity*deltaTime;
-		//System.out.println("rad " + radians + " velo " + velocity + " d time " + deltaTime);
-		//System.out.println("updated tank " + xCord + ", " + yCord);
-
 	}
 	
 	public Bullet shoot() {
-		System.out.println("SHHOOT");
-		return new Bullet(xCord, yCord, radians);
+		return new Bullet(xCord+Math.cos(radians)*10, yCord-Math.sin(radians)*10, radians);
 	}
 	
 	public void rotateLeft() {
@@ -125,5 +121,16 @@ public class Tank extends Glyph{
 	 */
 	public boolean isClientTank() {
 		return isClient;
+	}
+
+	public void wasShot(Bullet bullet) {
+		System.out.println("a tank was shot");
+		health--;
+		if(health<0)
+			isActive = false;
+	}
+
+	public boolean isActive() {
+		return isActive;
 	}
 }

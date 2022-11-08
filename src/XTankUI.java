@@ -97,7 +97,8 @@ public class XTankUI{
 	public void drawAndAnimate() {
 		List<Tank> tanks = gameModel.getTanks();
 		for (Tank tank : tanks) {
-			drawTank(tank);
+			if(tank.isActive())
+				drawTank(tank);
 		}
 		List<Bullet> bullets = gameModel.getBullets();
 		for (Bullet bullet: bullets) {

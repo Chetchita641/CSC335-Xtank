@@ -60,16 +60,10 @@ public class GameModel implements Serializable {
 	public synchronized void updateState() {
 		long currentTime = System.nanoTime();
 		double deltaTime = (double) (currentTime-lastTime)/1000000000;
-
-		for (Tank tank : tanks) {
-			tank.update(deltaTime);
+		for (Glyph g : glyphs) {
+			g.update(deltaTime);
 		}
-		for (Bullet bullet : bullets) {
-			bullet.update(deltaTime);
-		}
-		for (Explosion explosion : explosions) {
-			explosion.update(deltaTime);
-		}
+		checkTankBulletIntersection();		
 		lastTime = currentTime;
 	}
 
@@ -141,12 +135,14 @@ public class GameModel implements Serializable {
 	public synchronized void shoot(int playerId) {
 		Bullet bullet = tanks.get(playerId).shoot();
 		bullets.add(bullet);
+		glyphs.add(bullet);
 		lastChange = "shoot: player " + playerId;
 	}
 
 	public synchronized void explode() {
 		Explosion explosion = new Explosion(100, 100, 10);
 		explosions.add(explosion);
+		glyphs.add(explosion);
 		lastChange = "explode: (100, 100)";
 	}
 	
@@ -176,5 +172,16 @@ public class GameModel implements Serializable {
 	 */
 	public void setAsClient(int playerId) {
 		tanks.get(playerId).setClientTank();
+	}
+	
+	public void checkTankBulletIntersection() {
+		for(Tank tank: tanks) {
+			for(Bullet bullet: bullets) {
+				if(tank.intersects(bullet.getxCord(), bullet.getyCord())) {
+					tank.wasShot(bullet);
+					//bullets.remove(bullet);
+				}
+			}
+		}
 	}
 }

@@ -30,7 +30,7 @@ public class Particle extends Glyph {
     public void move() {}
 
     @Override
-    public boolean intersects(int x, int y) {
+    public boolean intersects(double x, double y) {
         return false;
     }
 
