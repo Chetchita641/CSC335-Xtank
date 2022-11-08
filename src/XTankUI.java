@@ -1,14 +1,18 @@
+import java.util.List;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.*;
-import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.layout.*;
-import org.eclipse.swt.widgets.*;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.KeyListener;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseListener;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.widgets.Canvas;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 
 public class XTankUI{
 	
@@ -97,7 +101,6 @@ public class XTankUI{
 	public void drawAndAnimate() {
 		List<Tank> tanks = gameModel.getTanks();
 		for (Tank tank : tanks) {
-			if(tank.isActive())
 				drawTank(tank);
 		}
 		List<Bullet> bullets = gameModel.getBullets();
@@ -122,6 +125,7 @@ public class XTankUI{
 		double y = bullet.getyCord();
 		Display.getDefault().asyncExec(new Runnable() {
 			 public void run() {
+				//gameModel.intersectsTank(bullet);
 				int[] cords = calcTriangleCords(x , y, radians, 10, 20);
 				gc.setBackground(display.getSystemColor(SWT.COLOR_RED));
 				gc.fillPolygon(cords);
@@ -135,20 +139,22 @@ public class XTankUI{
 		double y = tank.getYCord();
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
-				Color tankColor;
-				if(tank.isClientTank()) {
-					tankColor = display.getSystemColor(SWT.COLOR_GREEN);
+				if(tank.isActive()) {
+					Color tankColor;
+					if(tank.isClientTank()) {
+						tankColor = display.getSystemColor(SWT.COLOR_GREEN);
+					}
+					else {
+						tankColor = display.getSystemColor(SWT.COLOR_WHITE);
+					}
+					int[] cords = calcTriangleCords(x, y, radians, 30, 50);
+					gc.setBackground(tankColor);
+					gc.fillPolygon(cords);
+					gc.setBackground(display.getSystemColor(SWT.COLOR_BLACK));
+					gc.setForeground(tankColor);
+					gc.setFont(new Font(display, new FontData( "Arial", 10, SWT.NONE)));
+					gc.drawText(tank.getID(), (int)x, (int)y-40);
 				}
-				else {
-					tankColor = display.getSystemColor(SWT.COLOR_WHITE);
-				}
-				int[] cords = calcTriangleCords(x, y, radians, 30, 50);
-				gc.setBackground(tankColor);
-				gc.fillPolygon(cords);
-				gc.setBackground(display.getSystemColor(SWT.COLOR_BLACK));
-				gc.setForeground(tankColor);
-				gc.setFont(new Font(display, new FontData( "Arial", 10, SWT.NONE)));
-				gc.drawText(tank.getID(), (int)x, (int)y-40);
 			  }
 			});
 	}

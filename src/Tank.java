@@ -4,8 +4,8 @@ public class Tank extends Glyph{
 	private final double FRICTION = 1; 
 	private final double MAX_VELOCITY = 100;
 
-	private static final int WIDTH = 50;
-	private static final int HEIGHT = 100;
+	private static final int WIDTH = 30;
+	private static final int HEIGHT = 50;
 	private double xCord;
 	private double yCord;
 	private int health;
@@ -68,7 +68,13 @@ public class Tank extends Glyph{
 
 	@Override
 	public boolean intersects(double x, double y) {
-		return (x>=xCord&&x<=(xCord+WIDTH))&&(y>=yCord&&y<=(yCord+HEIGHT));
+		// check if point intersections with a circle centered on the tank
+		// with radius of the tank's longest dimension
+		int circleRadius = Math.max(HEIGHT, WIDTH)/2;
+		double xDistanceSqrd = Math.pow((x - xCord), 2);
+		double yDistanceSqrd = Math.pow((y - yCord), 2);
+		double radiusSqrd = Math.pow((circleRadius), 2);
+		return xDistanceSqrd + yDistanceSqrd <= radiusSqrd;
 	}
 
 	@Override
@@ -89,7 +95,7 @@ public class Tank extends Glyph{
 	}
 	
 	public Bullet shoot() {
-		return new Bullet(xCord+Math.cos(radians)*10, yCord-Math.sin(radians)*10, radians);
+		return new Bullet(xCord+Math.cos(radians)*50, yCord-Math.sin(radians)*50, radians);
 	}
 	
 	public void rotateLeft() {
@@ -125,8 +131,8 @@ public class Tank extends Glyph{
 
 	public void wasShot(Bullet bullet) {
 		System.out.println("a tank was shot");
-		health--;
-		if(health<0)
+		health-=100;
+		if(health<=0)
 			isActive = false;
 	}
 
