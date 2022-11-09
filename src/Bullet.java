@@ -1,12 +1,15 @@
 
 public class Bullet extends Glyph {
 	private final double FRICTION = 1; 
-
+	private final int XLIMIT = 1500;
+	private final int YLIMIT = 900;
+	
 	private double xCord;
 	private double yCord;
 	private double radians;
 	private double deltaTime;
 	private double velocity;
+	private GameModel game;
 	
 	
 	public Bullet(double x, double y, double r) {
@@ -14,6 +17,7 @@ public class Bullet extends Glyph {
 		yCord = y;
 		radians = r;
 		velocity = 150;
+		game = GameModel.getInstance();
 	}
 
 	@Override
@@ -37,6 +41,7 @@ public class Bullet extends Glyph {
 	@Override
 	public void update(double deltaTime) {
 		this.deltaTime = deltaTime;
+		
 		if (velocity > 0) {
 			velocity -= FRICTION*deltaTime;
 			velocity = Math.max(velocity, 0);
@@ -46,8 +51,22 @@ public class Bullet extends Glyph {
 			velocity = Math.min(velocity, 0);
 		}
 	
-		this.xCord += Math.cos(radians)*velocity*deltaTime;
-		this.yCord -= Math.sin(radians)*velocity*deltaTime;
+		// move forward 
+		double newXCord = xCord + Math.cos(radians)*velocity*deltaTime;
+		double newYCord = yCord - Math.sin(radians)*velocity*deltaTime;
+		
+		// wrap around
+		newXCord = Math.floorMod((int) newXCord, XLIMIT);
+		newYCord = Math.floorMod((int) newYCord, YLIMIT);
+		
+		// check for obstacles
+		if(game.isOpen(newXCord, newYCord)) {
+			xCord = newXCord;
+			yCord = newYCord;
+		}
+		else {
+			game.destroyBullet(this);
+		}
 	}
 
 	public double getxCord() {

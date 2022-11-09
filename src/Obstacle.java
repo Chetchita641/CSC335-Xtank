@@ -25,8 +25,7 @@ public class Obstacle extends Glyph {
 
 	@Override
 	public boolean intersects(double x, double y) {
-		// TODO Auto-generated method stub
-		return false;
+		return (x>=xCord-15&&x<=(xCord+width+15)&&(y>=yCord-15&&y<=(yCord+height+15)));
 	}
 
 	@Override

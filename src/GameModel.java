@@ -188,11 +188,15 @@ public class GameModel implements Serializable {
 		bullets.removeAll(toRemove);
 	}
 
-	public void intersectsTank(Bullet bullet) {
-		for(Tank tank: tanks) {
-			if(tank.intersects(bullet.getxCord(), bullet.getyCord())) {
-				tank.wasShot(bullet);
-			}
+	public boolean isOpen(double x, double y) {
+		for(Obstacle obstacle: obstacles) {
+			if(obstacle.intersects(x, y))
+				return false;
 		}
+		return true;
+	}
+
+	public synchronized void destroyBullet(Bullet bullet) {
+		bullets.remove(bullet);
 	}
 }

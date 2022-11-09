@@ -160,10 +160,7 @@ public class XTankUI{
 	}
 	
 	private int[] calcTriangleCords(double x, double y,
-			double radians, double width, double height){
-
-		x = Math.floorMod((int) x, xLimit);
-		y = Math.floorMod((int) y, yLimit);
+			double radians, double width, double height) {
 	
 		double ra, rb, rc;
 		ra = height/2;

@@ -3,6 +3,8 @@ public class Tank extends Glyph{
 	private final double ACCELERATION = 2;
 	private final double FRICTION = 1; 
 	private final double MAX_VELOCITY = 100;
+	private final int XLIMIT = 1500;
+	private final int YLIMIT = 900;
 
 	private static final int WIDTH = 30;
 	private static final int HEIGHT = 50;
@@ -15,13 +17,13 @@ public class Tank extends Glyph{
 	private double deltaTime;
 	private double velocity;
 	private boolean isClient;
+	private GameModel game;
 
 	public Tank(int pId, double x, double y) {
 		new Tank(pId, x, y, 100, 0, 100);
 	}
 	
 	public Tank(int pId, double x, double y, double radians, double velocity, int health) {
-		System.out.println("new tank at " + x + ", " + y);
 		this.xCord = x;
 		this.yCord = y;
 		this.radians = radians;
@@ -29,6 +31,7 @@ public class Tank extends Glyph{
 		this.health = health;
 		isActive = true;
 		playerId = pId;
+		game = GameModel.getInstance();
 	}
 
 	public double getXCord() {
@@ -89,9 +92,23 @@ public class Tank extends Glyph{
 			velocity = Math.min(velocity, 0);
 		}
 		
-	
-		this.xCord += Math.cos(radians)*velocity*deltaTime;
-		this.yCord -= Math.sin(radians)*velocity*deltaTime;
+		// move
+		double newXCord = xCord + Math.cos(radians)*velocity*deltaTime;
+		double newYCord = yCord - Math.sin(radians)*velocity*deltaTime;
+		
+		// wrap around
+		newXCord = Math.floorMod((int) newXCord, XLIMIT);
+		newYCord = Math.floorMod((int) newYCord, YLIMIT);
+		
+		
+		// check for obstacles
+		if(game.isOpen(newXCord, newYCord)) {
+			xCord = newXCord;
+			yCord = newYCord;
+		}
+		else {
+			velocity = 0;
+		}
 	}
 	
 	public Bullet shoot() {
