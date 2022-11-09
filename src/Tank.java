@@ -97,8 +97,8 @@ public class Tank extends Glyph{
 		double newYCord = yCord - Math.sin(radians)*velocity*deltaTime;
 		
 		// wrap around
-		newXCord = Math.floorMod((int) newXCord, XLIMIT);
-		newYCord = Math.floorMod((int) newYCord, YLIMIT);
+		newXCord = (newXCord%XLIMIT+XLIMIT)%XLIMIT;
+		newYCord = (newYCord%YLIMIT+YLIMIT)%YLIMIT;
 		
 		
 		// check for obstacles
