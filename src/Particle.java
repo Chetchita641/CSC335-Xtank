@@ -8,14 +8,14 @@ public class Particle extends Glyph {
     private double yCord;
     private double radians;
     private double velocity;
-    private double lifetime;
+    private double lifespan;
 
     private Random rand = new Random();
 
-    public Particle(double x, double y, double lifetime) {
+    public Particle(double x, double y, double lifespan) {
         this.xCord = x;
         this.yCord = y;
-        this.lifetime = lifetime;
+        this.lifespan = lifespan;
 
         radians = rand.nextDouble()*2*Math.PI;
         velocity = rand.nextDouble()*MAX_VELOCITY;
@@ -36,18 +36,18 @@ public class Particle extends Glyph {
 
     @Override
     public void update(double deltaTime) {
-        if (lifetime > 0) {
+        if (lifespan > 0) {
             velocity -= FRICTION*deltaTime;
             velocity = Math.max(velocity, 0);
             
             xCord += Math.cos(radians)*velocity*deltaTime;
             yCord -= Math.sin(radians)*velocity*deltaTime;
 
-            lifetime -= deltaTime;
+            lifespan -= deltaTime;
         } 
     }
 
-    public double getLifetime() { return lifetime; }
+    public double getLifespan() { return lifespan; }
     public double getXCord() { return xCord; }
     public double getYCord() { return yCord; }
     public double getRadians() { return radians; }

@@ -3,13 +3,21 @@ import java.util.Scanner;
 public class XTank {
 	public static void main(String [] args) {
 		Scanner s = new Scanner(System.in);
+
+		/*
     	System.out.println("Enter name:");
-    	//String name = s.nextLine();
-		String name = "Bob";
+    	String name = s.nextLine();
+		System.out.println("Choose your type of tank: (1) Light, (2) Medium, (3) Heavy: ");
+		int type = s.nextInt();
+		*/
+
+		String name = "bob";
+		int type = 3;
+
     	Client client = null;
 		GameModel gameModel = GameModel.getInstance();
 		try {
-			client = new Client("127.0.0.1", name);
+			client = new Client("127.0.0.1", name, type);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

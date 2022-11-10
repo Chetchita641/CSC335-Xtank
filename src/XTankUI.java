@@ -70,7 +70,7 @@ public class XTankUI{
 					client.shoot();
 				}
 				else if(e.keyCode==SWT.BS) {
-					gameModel.explode();
+					gameModel.explode(100, 100);
 				}
 			}
 			public void keyReleased(KeyEvent e) {}
@@ -123,10 +123,11 @@ public class XTankUI{
 		double radians = bullet.getRadians();
 		double x = bullet.getxCord();
 		double y = bullet.getyCord();
+		int type = bullet.getType();
 		Display.getDefault().asyncExec(new Runnable() {
 			 public void run() {
 				//gameModel.intersectsTank(bullet);
-				int[] cords = calcTriangleCords(x , y, radians, 10, 20);
+				int[] cords = calcTriangleCords(x , y, radians, 10, 20, type);
 				gc.setBackground(display.getSystemColor(SWT.COLOR_RED));
 				gc.fillPolygon(cords);
 			 }
@@ -137,6 +138,9 @@ public class XTankUI{
 		double radians = tank.getRadians();
 		double x = tank.getXCord();
 		double y = tank.getYCord();
+		int width = tank.getWidth();
+		int height = tank.getHeight();
+		int type = tank.getType();
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
 				if(tank.isActive()) {
@@ -147,7 +151,7 @@ public class XTankUI{
 					else {
 						tankColor = display.getSystemColor(SWT.COLOR_WHITE);
 					}
-					int[] cords = calcTriangleCords(x, y, radians, 30, 50);
+					int[] cords = calcTriangleCords(x, y, radians, width, height, type);
 					gc.setBackground(tankColor);
 					gc.fillPolygon(cords);
 					gc.setBackground(display.getSystemColor(SWT.COLOR_BLACK));
@@ -158,10 +162,57 @@ public class XTankUI{
 			  }
 			});
 	}
-	
+
 	private int[] calcTriangleCords(double x, double y,
+			double radians, double width, double height, int type) {
+
+		switch (type) {
+			case 1:
+				return lightTankCords(x, y, radians, width, height);
+			case 2:
+				return mediumTankCords(x, y, radians, width, height);
+			case 3:
+				return heavyTankCords(x, y, radians, width, height);
+			default:
+				System.out.println("Unknown tank type. Exiting");
+				System.exit(404);
+		}
+		return null;
+	}
+
+	private int[] lightTankCords(double x, double y,
 			double radians, double width, double height) {
-	
+		
+		double ra, rb, rc, rd;
+		ra = height/2;
+		rb = Math.sqrt(Math.pow(width/2,2)+Math.pow(height/2, 2));
+		rc = height/4;
+		rd = rb;
+
+		int ax, ay, bx, by, cx, cy, dx, dy;
+
+		double aRad = Math.atan2(0, height/2)-radians;
+		double bRad = Math.atan2(width/2, -height/2)-radians;
+		double cRad = Math.atan2(0, -height/4)-radians;
+		double dRad = Math.atan2(-width/2, -height/2)-radians;
+
+		ax = (int) (ra*Math.cos(aRad)+x);
+		ay = (int) (ra*Math.sin(aRad)+y);
+		bx = (int) (rb*Math.cos(bRad)+x);
+		by = (int) (rb*Math.sin(bRad)+y);
+		cx = (int) (rc*Math.cos(cRad)+x);
+		cy = (int) (rc*Math.sin(cRad)+y);
+		dx = (int) (rd*Math.cos(dRad)+x);
+		dy = (int) (rd*Math.sin(dRad)+y);
+
+		int[] cords = {ax, ay, bx, by, cx, cy, dx, dy};
+
+		return cords;
+	}
+
+	private int[] mediumTankCords(double x, double y,
+			double radians, double width, double height) {
+		
 		double ra, rb, rc;
 		ra = height/2;
 		rb = Math.sqrt(Math.pow(width/2,2)+Math.pow(height/2, 2));
@@ -183,8 +234,47 @@ public class XTankUI{
 		int[] cords = {ax, ay, bx, by, cx, cy};
 	
 		return cords;
+
 	}
 
+	private int[] heavyTankCords(double x, double y, 
+			double radians, double width, double height) {
+
+		double ra, rb, rc, rd, re, rf;
+		ra = height/2;
+		rb = Math.sqrt(Math.pow(width/2, 2)+Math.pow(height/4, 2));
+		rc = Math.sqrt(Math.pow(width/2, 2)+Math.pow(height/2, 2));
+		rd = height/4;
+		re = rc;
+		rf = rb;
+
+		int ax, ay, bx, by, cx, cy, dx, dy, ex, ey, fx, fy;
+
+		double aRad = Math.atan2(0, height/2)-radians;
+		double bRad = Math.atan2(width/2, height/4)-radians;
+		double cRad = Math.atan2(width/2, -height/2)-radians;
+		double dRad = Math.atan2(0, -height/4)-radians;
+		double eRad = Math.atan2(-width/2, -height/2)-radians;
+		double fRad = Math.atan2(-width/2, height/4)-radians;
+
+		ax = (int) (ra*Math.cos(aRad)+x);
+		ay = (int) (ra*Math.sin(aRad)+y);
+		bx = (int) (rb*Math.cos(bRad)+x);
+		by = (int) (rb*Math.sin(bRad)+y);
+		cx = (int) (rc*Math.cos(cRad)+x);
+		cy = (int) (rc*Math.sin(cRad)+y);
+		dx = (int) (rd*Math.cos(dRad)+x);
+		dy = (int) (rd*Math.sin(dRad)+y);
+		ex = (int) (re*Math.cos(eRad)+x);
+		ey = (int) (re*Math.sin(eRad)+y);
+		fx = (int) (rf*Math.cos(fRad)+x);
+		fy = (int) (rf*Math.sin(fRad)+y);
+
+		int[] cords = {ax, ay, bx, by, cx, cy, dx, dy, ex, ey, fx, fy};
+
+		return cords;
+	}
+	
 	public void drawObstacle(Obstacle obstacle) {
 		int x = obstacle.getXCord();
 		int y = obstacle.getYCord();

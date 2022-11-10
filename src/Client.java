@@ -21,7 +21,7 @@ public class Client {
      * @param serverAddress the server to connect to
      * @param name name of the player on this Client
      */
-    public Client(String serverAddress, String name) {
+    public Client(String serverAddress, String name, int type) {
         try {
 			socket = new Socket(serverAddress, 58901);
 	        //in = new ObjectInputStream(socket.getInputStream());
@@ -31,6 +31,7 @@ public class Client {
 			e.printStackTrace();
 		} 
         out.println(name);
+		out.println(type);
         out.flush();
         game = GameModel.getInstance();
     }
@@ -152,9 +153,9 @@ public class Client {
 				double yCord = Double.parseDouble(tanksInfo.substring(second+1, third));
 				double rads = Double.parseDouble(tanksInfo.substring(third+1, fourth));
 				double velo = Double.parseDouble(tanksInfo.substring(fourth+1, fifth));
-				int health = Integer.parseInt(tanksInfo.substring(fifth+1, sixth));
+				int type = Integer.parseInt(tanksInfo.substring(fifth+1, sixth));
 
-				game.addTank(playerId, xCord, yCord, rads, velo, health);
+				game.addTank(playerId, xCord, yCord, rads, velo, type);
 				i = sixth+1;
 			}
 		}

@@ -1,25 +1,24 @@
 import java.util.Random;
 
 public class Explosion extends Glyph {
-    private final int PARTICLE_MIN = 5;
-    private final int PARTICLE_MAX = 10;
+    private final int PARTICLE_MIN = 10;
+    private final int PARTICLE_MAX = 20;
 
+    private double lifespan = 10;
     private int xCord;
     private int yCord;
-    private double lifetime = 2;
     private Particle[] particles;
 
-    public Explosion(int x, int y, double lifetime) {
+    public Explosion(int x, int y) {
         this.xCord = x;
         this.yCord = y;
-        this.lifetime = lifetime;
         
         Random rand = new Random();
         int count = rand.nextInt((PARTICLE_MAX-PARTICLE_MIN)+PARTICLE_MIN);
         this.particles = new Particle[count];
 
         for (int i = 0; i < count; i++) {
-            this.particles[i] = new Particle(x, y, rand.nextDouble()*lifetime);
+            this.particles[i] = new Particle(x, y, rand.nextDouble()*lifespan);
         }
     }
 
@@ -38,15 +37,21 @@ public class Explosion extends Glyph {
 
     @Override
     public void update(double deltaTime) {
-        if (lifetime > 0) {
+        if (lifespan > 0) {
             for (Particle p : particles) {
-                if (p.getLifetime() > 0) {
+                if (p.getLifespan() > 0) {
                     p.update(deltaTime);
                 }
             }
-            lifetime -= deltaTime;
+            lifespan -= deltaTime;
+            
         }
     }
 
     public Particle[] getParticles() { return particles; }
+
+    @Override
+    public String toString() {
+        return String.format("(%d, %d)", xCord, yCord);
+    }
 }

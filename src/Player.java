@@ -11,6 +11,7 @@ public class Player implements Runnable {
 	//private ObjectOutputStream output;
 	private PrintWriter output;
 	private String name;
+	private int type;
 	private int playerId;
 	private GameModel game;
 	private XTankServer server;
@@ -27,8 +28,8 @@ public class Player implements Runnable {
 		this.game = game;
 		this.playerId = playerId;
 		this.server = XTankServer.getInstance();
-		game.addTank(playerId);
-		server.notifyPlayers();
+		//game.addTank(playerId);
+		//server.notifyPlayers();
 	}
 
 	/**
@@ -42,7 +43,11 @@ public class Player implements Runnable {
 			input = new Scanner(socket.getInputStream());
 			//output = new ObjectOutputStream(socket.getOutputStream());
 			output = new PrintWriter(socket.getOutputStream());
-			this.name = input.nextLine(); 
+
+			this.name = input.nextLine();
+			this.type = input.nextInt();
+			game.addTank(playerId, type);
+
 			//output.writeObject("hi " + name);
 			output.println("hi " + name);
 			output.println("add tanks " + game.listTanks());

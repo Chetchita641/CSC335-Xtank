@@ -83,8 +83,8 @@ public class GameModel implements Serializable {
 	 * of Tanks
 	 * @param index
 	 */
-	public synchronized void addTank(int index) {
-		this.addTank(index, 300, 500, 1, 0, 100);
+	public synchronized void addTank(int index, int type) {
+		this.addTank(index, 300, 500, 0, 0, type);
 
 	}
 	
@@ -94,19 +94,19 @@ public class GameModel implements Serializable {
 	 * @param index
 	 * @param xCord
 	 * @param yCord
-	 */
 	public synchronized void addTank(int index, int xCord, int yCord) {
 		Tank t =  new Tank(index, xCord, yCord);
 		tanks.add(index, t);
 		glyphs.add(t);
 		lastChange = "add tanks " + t.toString();
 	}
+	 */
 	
-	public synchronized void addTank(int playerId, double xCord, double yCord, double rads, double velo, int health) {
-		Tank t =  new Tank(playerId, xCord, yCord, rads, velo, health);
+	public synchronized void addTank(int playerId, double xCord, double yCord, double rads, double velo, int type) {
+		Tank t =  new Tank(playerId, type, xCord, yCord, rads, velo, type);
 		tanks.add(playerId, t);
 		glyphs.add(t);
-		lastChange = "add tanks " + t.toString();
+		//lastChange = "add tanks " + t.toString();
 	}
 	 
 	/**
@@ -140,11 +140,11 @@ public class GameModel implements Serializable {
 		lastChange = "shoot: player " + playerId;
 	}
 
-	public synchronized void explode() {
-		Explosion explosion = new Explosion(100, 100, 10);
+	public synchronized void explode(int x, int y) {
+		Explosion explosion = new Explosion(x, y);
 		explosions.add(explosion);
 		glyphs.add(explosion);
-		lastChange = "explode: (100, 100)";
+		lastChange = "explode: " + explosion.toString();
 	}
 	
 	/**
@@ -181,6 +181,9 @@ public class GameModel implements Serializable {
 			for(Tank tank: tanks) {
 				if(tank.intersects(bullet.getxCord(), bullet.getyCord())) {
 					tank.wasShot(bullet);
+					if (!tank.isActive()) {
+						explode((int) tank.getXCord(), (int) tank.getYCord());
+					}
 					toRemove.add(bullet);
 				}
 			}
