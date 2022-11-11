@@ -82,7 +82,7 @@ public class Client {
 				else if(response.startsWith("your id")) {
 					processID(response.substring(9));
 				}
-            	game.drawAll(ui);
+            	//game.drawAll(ui);
             } while (in.hasNext());
         } 
         catch (Exception e) {
@@ -169,6 +169,7 @@ public class Client {
 	private void processMove(String moveInfo) {
 		int playerId = Integer.parseInt(moveInfo);
 		game.moveTank(playerId);
+		System.out.println(game.listTanks());
 	}
 
 	private void processLeft(String leftInfo) {

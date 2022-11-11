@@ -5,7 +5,7 @@ import java.util.List;
 public class GameModel implements Serializable {
 	private static GameModel gameModelInstance;
 
-	public String lastChange;
+	private String lastChange;
 
 	private long lastTime;
 	
@@ -14,7 +14,7 @@ public class GameModel implements Serializable {
 	private List<Bullet> bullets;
 	private List<Obstacle> obstacles;
 	private List<Explosion> explosions;
-
+	private List<Integer> currentPlayers;
 	Thread thread;
 	
 	/**
@@ -27,6 +27,7 @@ public class GameModel implements Serializable {
 		lastTime = System.nanoTime();
 		obstacles =  new ArrayList<Obstacle>();
 		explosions = new ArrayList<Explosion>();
+		currentPlayers = new ArrayList<Integer>();
 		
 		// test obstacles
 		obstacles.add(new Obstacle(5,5,25,25));
@@ -84,8 +85,7 @@ public class GameModel implements Serializable {
 	 * @param index
 	 */
 	public synchronized void addTank(int index, int type) {
-		this.addTank(index, 300, 500, 0, 0, type);
-
+		this.addTank(index, 300, 500, 0, 0, type);	
 	}
 	
 	/**
@@ -103,10 +103,13 @@ public class GameModel implements Serializable {
 	 */
 	
 	public synchronized void addTank(int playerId, double xCord, double yCord, double rads, double velo, int type) {
-		Tank t =  new Tank(playerId, type, xCord, yCord, rads, velo, type);
-		tanks.add(playerId, t);
-		glyphs.add(t);
-		//lastChange = "add tanks " + t.toString();
+		if(!currentPlayers.contains(playerId)) {
+			Tank t =  new Tank(playerId, type, xCord, yCord, rads, velo, type);
+			tanks.add(playerId, t);
+			glyphs.add(t);
+			lastChange = "add tanks " + t.toString();
+			currentPlayers.add(playerId);
+		}
 	}
 	 
 	/**
@@ -201,5 +204,9 @@ public class GameModel implements Serializable {
 
 	public synchronized void destroyBullet(Bullet bullet) {
 		bullets.remove(bullet);
+	}
+	
+	public synchronized void removePlayer(int playerId) {
+		currentPlayers.remove((Integer)playerId);
 	}
 }

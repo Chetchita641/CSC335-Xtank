@@ -206,8 +206,10 @@ public class Tank extends Glyph{
 	public void wasShot(Bullet bullet) {
 		System.out.println("a tank was shot");
 		health-=bullet.getDamage();
-		if(health<=0)
+		if(health<=0) {
 			isActive = false;
+			game.removePlayer(playerId);
+		}
 	}
 
 	public boolean isActive() {

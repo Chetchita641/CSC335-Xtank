@@ -51,6 +51,8 @@ public class Player implements Runnable {
 			//output.writeObject("hi " + name);
 			output.println("hi " + name);
 			output.println("add tanks " + game.listTanks());
+			System.out.println(game.listTanks());
+			server.notifyPlayers();
 			output.println("your id: " + playerId);
 			output.flush();
 			processCommands();
@@ -64,6 +66,7 @@ public class Player implements Runnable {
 	 * Updates this Player's client with changes in the GameModel
 	 */
 	public void update() {
+		System.out.println("update " + game.getLastChange());
 		output.println(game.getLastChange());
 		output.flush();
 	}
@@ -74,23 +77,26 @@ public class Player implements Runnable {
 	private void processCommands() {
 		while (input.hasNextLine()) {
 			String command = input.nextLine();
-			System.out.println("received command " + command);
 			if(command.equals("move")) {
 				game.moveTank(playerId);
+				server.notifyPlayers();
 			}
 			else if (command.equals("left")) {
 				game.rotateLeft(playerId);
+				server.notifyPlayers();
 			}
 			else if (command.equals("right")) {
 				game.rotateRight(playerId);
+				server.notifyPlayers();
 			}
 			else if(command.equals("shoot")) {
 				game.shoot(playerId);
+				server.notifyPlayers();
 			}
 			else if(command.equals("back")) {
 				game.backward(playerId);
+				server.notifyPlayers();
 			}
-			server.notifyPlayers();
 		}
 	}
 }
