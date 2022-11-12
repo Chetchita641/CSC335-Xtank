@@ -26,18 +26,7 @@ public class GameModel implements Serializable {
 	 * Creates a new GameModel
 	 */
 	private GameModel() {
-		glyphs = new ArrayList<Glyph>();
-		tanks = new ArrayList<Tank>();
-		bullets = new ArrayList<Bullet>();
-		lastTime = System.nanoTime();
-		obstacles =  new ArrayList<Obstacle>();
-		explosions = new ArrayList<Explosion>();
-		currentPlayers = new ArrayList<Integer>();
-		
-		// test obstacles
-		/*obstacles.add(new Obstacle(5,5,25,25));
-		obstacles.add(new Obstacle(150,200,25,25));
-		obstacles.add(new Obstacle(25,50,25,25));*/
+		reset();
 	}
 
 	public static GameModel getInstance() {
@@ -45,6 +34,16 @@ public class GameModel implements Serializable {
 			gameModelInstance = new GameModel();
 		}
 		return gameModelInstance;
+	}
+	
+	public void reset() {
+		glyphs = new ArrayList<Glyph>();
+		tanks = new ArrayList<Tank>();
+		bullets = new ArrayList<Bullet>();
+		lastTime = System.nanoTime();
+		obstacles =  new ArrayList<Obstacle>();
+		explosions = new ArrayList<Explosion>();
+		currentPlayers = new ArrayList<Integer>();
 	}
 
 	public Tank getTank(int playerId) {
@@ -66,9 +65,12 @@ public class GameModel implements Serializable {
 	public List<Explosion> getExplosions() {
 		return explosions;
 	}
+	
+	public boolean isGameOver() {
+		return currentPlayers.size()==1&&tanks.size()>1;
+	}
 
 	public synchronized void updateState() {
-		//System.out.println("---UPDATE---");
 		long currentTime = System.nanoTime();
 		double deltaTime = (double) (currentTime-lastTime)/1000000000;
 		for (Glyph g : glyphs) {
@@ -96,20 +98,6 @@ public class GameModel implements Serializable {
 	public synchronized void addTank(int index, int type, String name) {
 		this.addTank(index, 300, 500, 0, 0, type, name);
 	}
-	
-	/**
-	 * Creates a new Tank and adds it at the specified index and coordinates in 
-	 * the list of Tanks
-	 * @param index
-	 * @param xCord
-	 * @param yCord
-	public synchronized void addTank(int index, int xCord, int yCord) {
-		Tank t =  new Tank(index, xCord, yCord);
-		tanks.add(index, t);
-		glyphs.add(t);
-		lastChange = "add tanks " + t.toString();
-	}
-	 */
 	
 	public synchronized void addTank(int playerId, double xCord, double yCord, double rads, double velo, int type, String name) {
 		if(!currentPlayers.contains(playerId)) {

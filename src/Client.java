@@ -10,7 +10,6 @@ import java.util.Scanner;
  */
 public class Client {
     private Socket socket;
-    //private ObjectInputStream in;
     private Scanner in;
     private PrintWriter out;
     private GameModel game;
@@ -26,7 +25,6 @@ public class Client {
     public Client(String serverAddress, String name, int type) {
         try {
 			socket = new Socket(serverAddress, 58901);
-	        //in = new ObjectInputStream(socket.getInputStream());
 			in = new Scanner(socket.getInputStream());
 			out = new PrintWriter(socket.getOutputStream(), true);
 		} catch (IOException e) {
@@ -56,9 +54,7 @@ public class Client {
      * This reads in and processes responses from the server
      */
     public void play(){
-    	
         try {
-            //Object response = ((ObjectInputStream) in).readObject();
             String response;
             
             do {
@@ -88,7 +84,9 @@ public class Client {
 				else if(response.startsWith("set maze")) {
 					processMaze(response.substring(9));
 				}
-            	//game.drawAll(ui);
+				else if(response.startsWith("game over")) {
+					XTank.gameOver();
+				}
             } while (in.hasNext());
         } 
         catch (Exception e) {
