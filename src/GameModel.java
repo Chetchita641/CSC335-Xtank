@@ -10,6 +10,7 @@ public class GameModel implements Serializable {
 	private static GameModel gameModelInstance;
 
 	private String lastChange;
+	private String statusMsg;
 
 	private long lastTime;
 	
@@ -44,6 +45,10 @@ public class GameModel implements Serializable {
 			gameModelInstance = new GameModel();
 		}
 		return gameModelInstance;
+	}
+
+	public Tank getTank(int playerId) {
+		return tanks.get(playerId);
 	}
 
 	public List<Tank> getTanks() {
@@ -88,8 +93,8 @@ public class GameModel implements Serializable {
 	 * of Tanks
 	 * @param index
 	 */
-	public synchronized void addTank(int index, int type) {
-		this.addTank(index, 300, 500, 0, 0, type);	
+	public synchronized void addTank(int index, int type, String name) {
+		this.addTank(index, 300, 500, 0, 0, type, name);
 	}
 	
 	/**
@@ -106,13 +111,14 @@ public class GameModel implements Serializable {
 	}
 	 */
 	
-	public synchronized void addTank(int playerId, double xCord, double yCord, double rads, double velo, int type) {
+	public synchronized void addTank(int playerId, double xCord, double yCord, double rads, double velo, int type, String name) {
 		if(!currentPlayers.contains(playerId)) {
-			Tank t =  new Tank(playerId, type, xCord, yCord, rads, velo, type);
+			Tank t =  new Tank(playerId, type, xCord, yCord, rads, velo, name);
 			tanks.add(playerId, t);
 			glyphs.add(t);
 			lastChange = "add tanks " + t.toString();
 			currentPlayers.add(playerId);
+			statusMsg = name + " has entered the battlefield!";
 		}
 	}
 	 
@@ -174,6 +180,14 @@ public class GameModel implements Serializable {
 		return lastChange;
 	}
 
+	public String getStatusMessage() {
+		return statusMsg;
+	}
+
+	public void setStatusMessage(String msg) {
+		this.statusMsg = msg;
+	}
+
 	/**
 	 * Sets which tank is the client's
 	 * @param playerId
@@ -190,6 +204,7 @@ public class GameModel implements Serializable {
 					tank.wasShot(bullet);
 					if (!tank.isActive()) {
 						explode((int) tank.getXCord(), (int) tank.getYCord());
+						statusMsg = tank.getName() + " has been destroyed";
 					}
 					toRemove.add(bullet);
 				}

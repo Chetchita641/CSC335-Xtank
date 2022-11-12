@@ -16,6 +16,8 @@ public class Client {
     private GameModel game;
     private XTankUI ui;
 
+	private int playerId;
+	private String name;
     /**
      * Creates a new Client for XTank
      * @param serverAddress the server to connect to
@@ -30,6 +32,7 @@ public class Client {
 		} catch (IOException e) {
 			e.printStackTrace();
 		} 
+		this.name = name;
         out.println(name);
 		out.println(type);
         out.flush();
@@ -127,6 +130,14 @@ public class Client {
 		out.println("shoot");
 		out.flush();
 	}
+
+	public int getPlayerId() {
+		return playerId;
+	}
+
+	public String getName() {
+		return name;
+	}
     
     /**
      * Process an "add tanks" command from the server
@@ -147,16 +158,18 @@ public class Client {
 				int third = tanksInfo.indexOf(",", second+1);
 				int fourth = tanksInfo.indexOf(",", third+1);
 				int fifth = tanksInfo.indexOf(",", fourth+1);
-				int sixth = tanksInfo.indexOf(")", fifth);
+				int sixth = tanksInfo.indexOf(",", fifth+1);
+				int seventh = tanksInfo.indexOf(")", sixth+1);
 				int playerId = Integer.parseInt(tanksInfo.substring(i, first));
 				double xCord = Double.parseDouble(tanksInfo.substring(first+1, second));
 				double yCord = Double.parseDouble(tanksInfo.substring(second+1, third));
 				double rads = Double.parseDouble(tanksInfo.substring(third+1, fourth));
 				double velo = Double.parseDouble(tanksInfo.substring(fourth+1, fifth));
 				int type = Integer.parseInt(tanksInfo.substring(fifth+1, sixth));
+				String tankName = tanksInfo.substring(sixth+1, seventh);
 
-				game.addTank(playerId, xCord, yCord, rads, velo, type);
-				i = sixth+1;
+				game.addTank(playerId, xCord, yCord, rads, velo, type, tankName);
+				i = seventh+1;
 			}
 		}
 	}
@@ -167,33 +180,33 @@ public class Client {
 	 * @param moveInfo information from the server on which tank to move
 	 */
 	private void processMove(String moveInfo) {
-		int playerId = Integer.parseInt(moveInfo);
+		playerId = Integer.parseInt(moveInfo);
 		game.moveTank(playerId);
-		System.out.println(game.listTanks());
+		//System.out.println(game.listTanks());
 	}
 
 	private void processLeft(String leftInfo) {
-		int playerId = Integer.parseInt(leftInfo);
+		playerId = Integer.parseInt(leftInfo);
 		game.rotateLeft(playerId);
 	}
 	
 	private void processRight(String rightInfo) {
-		int playerId = Integer.parseInt(rightInfo);
+		playerId = Integer.parseInt(rightInfo);
 		game.rotateRight(playerId);
 	}
 
 	private void processBack(String backInfo) {
-		int playerId = Integer.parseInt(backInfo);
+		playerId = Integer.parseInt(backInfo);
 		game.backward(playerId);
 	}
 	
 	private void processShoot(String shootInfo) {
-		int playerId = Integer.parseInt(shootInfo);
+		playerId = Integer.parseInt(shootInfo);
 		game.shoot(playerId);
 	}
 	
 	private void processID(String idInfo) {
-		int playerId = Integer.parseInt(idInfo);
+		playerId = Integer.parseInt(idInfo);
 		game.setAsClient(playerId);
 	}
 }
