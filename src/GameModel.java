@@ -105,7 +105,8 @@ public class GameModel implements Serializable {
 	 * @param index
 	 */
 	public synchronized void addTank(int index, int type, String name) {
-		this.addTank(index, 300, 500, 0, 0, type, name);
+		int health = Tank.getHealthStat(type);
+		this.addTank(index, type, 300, 500, 0, 0, health, name);
 	}
 	
 	/**
@@ -122,9 +123,11 @@ public class GameModel implements Serializable {
 	}
 	 */
 	
-	public synchronized void addTank(int playerId, double xCord, double yCord, double rads, double velo, int type, String name) {
+	public synchronized void addTank(int playerId, int type, double xCord, double yCord, 
+			double rads, double velo, int health, String name) {
+		
 		if(!currentPlayers.contains(playerId)) {
-			Tank t =  new Tank(playerId, type, xCord, yCord, rads, velo, name);
+			Tank t =  new Tank(playerId, type, xCord, yCord, rads, velo, health, name);
 			tanks.add(playerId, t);
 			glyphs.add(t);
 			lastChange = "add tanks " + t.toString();

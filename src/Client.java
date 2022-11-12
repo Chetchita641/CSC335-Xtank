@@ -162,17 +162,19 @@ public class Client {
 				int fourth = tanksInfo.indexOf(",", third+1);
 				int fifth = tanksInfo.indexOf(",", fourth+1);
 				int sixth = tanksInfo.indexOf(",", fifth+1);
-				int seventh = tanksInfo.indexOf(")", sixth+1);
+				int seventh = tanksInfo.indexOf(",", sixth+1);
+				int eighth = tanksInfo.indexOf(")", seventh+1);
 				int playerId = Integer.parseInt(tanksInfo.substring(i, first));
-				double xCord = Double.parseDouble(tanksInfo.substring(first+1, second));
-				double yCord = Double.parseDouble(tanksInfo.substring(second+1, third));
-				double rads = Double.parseDouble(tanksInfo.substring(third+1, fourth));
-				double velo = Double.parseDouble(tanksInfo.substring(fourth+1, fifth));
-				int type = Integer.parseInt(tanksInfo.substring(fifth+1, sixth));
-				String tankName = tanksInfo.substring(sixth+1, seventh);
+				int type = Integer.parseInt(tanksInfo.substring(first+1, second));
+				double xCord = Double.parseDouble(tanksInfo.substring(second+1, third));
+				double yCord = Double.parseDouble(tanksInfo.substring(third+1, fourth));
+				double rads = Double.parseDouble(tanksInfo.substring(fourth+1, fifth));
+				double velo = Double.parseDouble(tanksInfo.substring(fifth+1, sixth));
+				int health = Integer.parseInt(tanksInfo.substring(sixth+1, seventh));
+				String tankName = tanksInfo.substring(seventh+1, eighth);
 
-				game.addTank(playerId, xCord, yCord, rads, velo, type, tankName);
-				i = seventh+1;
+				game.addTank(playerId, type, xCord, yCord, rads, velo, health, tankName);
+				i = eighth+1;
 			}
 		}
 	}
