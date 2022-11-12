@@ -17,6 +17,8 @@ public class Tank extends Glyph{
 	private static final int HEAVY_ACCEL = 1;
 
 	private int type;
+	private String typeStr;
+	private String name;
 	private int width;
 	private int height;
 	private int health;
@@ -44,26 +46,30 @@ public class Tank extends Glyph{
 	}
 	*/
 	
-	public Tank(int pId, int type, double x, double y, double radians, double velocity, int health) {
+	public Tank(int pId, int type, double x, double y, double radians, double velocity, String name) {
 		this.xCord = x;
 		this.yCord = y;
 		this.radians = radians;
 		this.velocity = velocity;
+		this.name = name;
 		this.type = type;
 		switch (type) {
 			case 1:
+				typeStr = "Light Tank";
 				width = LIGHT_WIDTH;
 				height = LIGHT_HEIGHT;
 				health = LIGHT_HEALTH;
 				acceleration = LIGHT_ACCEL;
 				break;
 			case 2:
+				typeStr = "Medium Tank";
 				width = MEDIUM_WIDTH;
 				height = MEDIUM_HEIGHT;
 				health = MEDIUM_HEALTH;
 				acceleration = MEDIUM_ACCEL;
 				break;
 			case 3:
+				typeStr = "Heavy Tank";
 				width = HEAVY_WIDTH;
 				height = HEAVY_HEIGHT;
 				health = HEAVY_HEALTH;
@@ -101,6 +107,18 @@ public class Tank extends Glyph{
 
 	public int getType() {
 		return type;
+	}
+
+	public String getTypeString() {
+		return typeStr;
+	}
+
+	public int getHealth() {
+		return health;
+	}
+
+	public String getName() {
+		return name;
 	}
 	
 	/*@Override
@@ -181,7 +199,7 @@ public class Tank extends Glyph{
 	}
 	
 	public String toString() {
-		return String.format("(%s,%f,%f,%f,%f,%d)", playerId, xCord, yCord, radians, velocity, type);
+		return String.format("(%s,%f,%f,%f,%f,%d,%s)", playerId, xCord, yCord, radians, velocity, type, name);
 	}
 
 	public String getID() {
@@ -206,7 +224,8 @@ public class Tank extends Glyph{
 	public void wasShot(Bullet bullet) {
 		System.out.println("a tank was shot");
 		health-=bullet.getDamage();
-		if(health<=0) {
+		health = Math.max(health, 0);
+		if(health==0) {
 			isActive = false;
 			game.removePlayer(playerId);
 		}

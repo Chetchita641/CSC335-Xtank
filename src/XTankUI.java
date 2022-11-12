@@ -10,8 +10,14 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowData;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 
 public class XTankUI{
@@ -33,11 +39,15 @@ public class XTankUI{
 	public void start(){
 		display = new Display();
 		this.shell = new Shell(display);
-		shell.setSize(xLimit, yLimit);
+		shell.setSize(xLimit, yLimit+100);
 		shell.setText("xtank");
-		shell.setLayout(new FillLayout());
+
+		RowLayout layout = new RowLayout();
+		layout.marginLeft = 0;
+		shell.setLayout(layout);
 
 		canvas = new Canvas(shell, SWT.NO_REDRAW_RESIZE | SWT.DOUBLE_BUFFERED);
+		canvas.setLayoutData(new RowData(xLimit, yLimit));
 		canvas.setBackground(display.getSystemColor(SWT.COLOR_BLACK));
 
 		gc = new GC(canvas);
@@ -71,8 +81,9 @@ public class XTankUI{
 				else if(e.keyCode==SWT.SPACE) {
 					client.shoot();
 				}
-				else if(e.keyCode==SWT.BS) {
-					gameModel.explode(100, 100);
+				else if(e.character=='s' && gameOverFlag) {
+					XTank.restart();
+					display.dispose();
 				}
 				else if(e.character=='s' && gameOverFlag) {
 					XTank.restart();
@@ -82,6 +93,16 @@ public class XTankUI{
 			public void keyReleased(KeyEvent e) {}
 		});
 
+		Group statusBarGroup = new Group(shell, SWT.NONE);
+		statusBarGroup.setLayoutData(new RowData(xLimit, 50));
+		
+		Label statusMessage = new Label(statusBarGroup, SWT.NONE);
+		Font font = new Font(display, new FontData("Arial", 16, SWT.BOLD));
+		statusMessage.setFont(font);
+		statusMessage.setText("Welcome");
+		statusMessage.setLocation(10, 10);
+		statusMessage.pack();
+
 		final int INTERVAL = 10;
 		Runnable runnable = new Runnable() {
 			public void run() {
@@ -89,6 +110,8 @@ public class XTankUI{
 					gameOverDisplay();
 				}
 				drawAndAnimate();
+				statusMessage.setText(getStatusMessage());
+				statusMessage.pack();
 				display.timerExec(INTERVAL, this);
 			}
 		};
@@ -322,5 +345,15 @@ public class XTankUI{
 			}
 		});
 
+	}
+
+	private String getStatusMessage() {
+		Tank tank = gameModel.getTank(client.getPlayerId());
+		String nameMsg = String.format("Name: %s    ", client.getName());
+		String typeMsg = String.format("Type: %s    ", tank.getTypeString());
+		String healthMsg = String.format("Health: %d      ", tank.getHealth());
+		String statusMsg = gameModel.getStatusMessage();
+		
+		return nameMsg + typeMsg + healthMsg + statusMsg;
 	}
 }

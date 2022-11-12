@@ -48,7 +48,7 @@ public class Player implements Runnable {
 
 			this.name = input.nextLine();
 			this.type = input.nextInt();
-			game.addTank(playerId, type);
+			game.addTank(playerId, type, name);
 
 			//output.writeObject("hi " + name);
 			output.println("hi " + name);
