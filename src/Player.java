@@ -50,8 +50,8 @@ public class Player implements Runnable {
 
 			//output.writeObject("hi " + name);
 			output.println("hi " + name);
+			output.println("set maze " + server.getMazeFile());
 			output.println("add tanks " + game.listTanks());
-			System.out.println(game.listTanks());
 			server.notifyPlayers();
 			output.println("your id: " + playerId);
 			output.flush();
