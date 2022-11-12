@@ -46,33 +46,31 @@ public class Tank extends Glyph{
 	}
 	*/
 	
-	public Tank(int pId, int type, double x, double y, double radians, double velocity, String name) {
+	public Tank(int pId, int type, double x, double y, double radians, double velocity, int health, String name) {
 		this.xCord = x;
 		this.yCord = y;
 		this.radians = radians;
 		this.velocity = velocity;
 		this.name = name;
+		this.health = health;
 		this.type = type;
 		switch (type) {
 			case 1:
 				typeStr = "Light Tank";
 				width = LIGHT_WIDTH;
 				height = LIGHT_HEIGHT;
-				health = LIGHT_HEALTH;
 				acceleration = LIGHT_ACCEL;
 				break;
 			case 2:
 				typeStr = "Medium Tank";
 				width = MEDIUM_WIDTH;
 				height = MEDIUM_HEIGHT;
-				health = MEDIUM_HEALTH;
 				acceleration = MEDIUM_ACCEL;
 				break;
 			case 3:
 				typeStr = "Heavy Tank";
 				width = HEAVY_WIDTH;
 				height = HEAVY_HEIGHT;
-				health = HEAVY_HEALTH;
 				acceleration = HEAVY_ACCEL;
 				break;
 			default:
@@ -83,6 +81,19 @@ public class Tank extends Glyph{
 		isActive = true;
 		playerId = pId;
 		game = GameModel.getInstance();
+	}
+
+	public static int getHealthStat(int type) {
+		switch (type) {
+			case 1:
+				return LIGHT_HEALTH;
+			case 2:
+				return MEDIUM_HEALTH;
+			case 3:
+				return HEAVY_HEALTH;
+			default:
+				return 0;
+		}
 	}
 
 	public double getXCord() {
@@ -199,7 +210,7 @@ public class Tank extends Glyph{
 	}
 	
 	public String toString() {
-		return String.format("(%s,%f,%f,%f,%f,%d,%s)", playerId, xCord, yCord, radians, velocity, type, name);
+		return String.format("(%s,%d,%f,%f,%f,%f,%d,%s)", playerId, type, xCord, yCord, radians, velocity, health, name);
 	}
 
 	public String getID() {
@@ -221,9 +232,13 @@ public class Tank extends Glyph{
 		return isClient;
 	}
 
-	public void wasShot(Bullet bullet) {
+	public void wasShot(Bullet bullet, String rule) {
 		System.out.println("a tank was shot");
-		health-=bullet.getDamage();
+		if (rule.equals("oneshot")) {
+			health = 0;
+		} else {
+			health-=bullet.getDamage();
+		}
 		health = Math.max(health, 0);
 		if(health==0) {
 			isActive = false;

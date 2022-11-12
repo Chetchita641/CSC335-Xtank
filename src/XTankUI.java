@@ -352,8 +352,9 @@ public class XTankUI{
 		String nameMsg = String.format("Name: %s    ", client.getName());
 		String typeMsg = String.format("Type: %s    ", tank.getTypeString());
 		String healthMsg = String.format("Health: %d      ", tank.getHealth());
+		String ruleMsg = String.format("Rule: %s       ", gameModel.getRule());
 		String statusMsg = gameModel.getStatusMessage();
 		
-		return nameMsg + typeMsg + healthMsg + statusMsg;
+		return nameMsg + typeMsg + healthMsg + ruleMsg + statusMsg;
 	}
 }

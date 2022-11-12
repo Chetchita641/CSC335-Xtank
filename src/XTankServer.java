@@ -7,10 +7,13 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class XTankServer {
-	private static final String[] mazeFiles = {"maze1.txt", "maze2.txt", "maze3.txt"};
+	private static final String[] mazeFiles = {"arena.txt", "forest.txt", "x.txt"};
+	private static final String[] rules = {"classic", "oneshot"};
+
 	private List<Player> players;
 	private GameModel game;
 	private int mazeType;
+	private int ruleType;
 	private static XTankServer instance;
 	
 	/**
@@ -19,7 +22,9 @@ public class XTankServer {
 	private XTankServer() {
 		players = new ArrayList<Player>();
     	game = GameModel.getInstance();
-    	//game.setObstacles("maze1.txt");
+
+    	game.setObstacles("x.txt");
+		
 	}
 	
 	/**
@@ -33,6 +38,7 @@ public class XTankServer {
 		}
 		return instance;
 	}
+
 	
 	/**
 	 * Starts the server. Begins to accept new clients and add them to the game
@@ -62,16 +68,7 @@ public class XTankServer {
     		p.update();
     	}
     }
-
-	public String getMazeFile() {
-		return mazeFiles[mazeType-1];
-	}
-
-	public void setMaze(int mazeType) {
-		this.mazeType = mazeType;
-		game.setObstacles(mazeFiles[mazeType-1]);
-	}
-
+    
 	public void gameOver() {
 		System.out.println("GAME OVER");
 		for(Player p: players) {
@@ -79,6 +76,24 @@ public class XTankServer {
 		}
 		game.reset();
 		players.clear();
+	}
+
+	public String getMazeFile() {
+		return mazeFiles[mazeType-1];
+	}
+	
+	public String getRule() {
+		return rules[ruleType-1];
+	}
+
+	public void setMaze(int mazeType) {
+		this.mazeType = mazeType;
+		game.setObstacles(mazeFiles[mazeType-1]);
+	}
+
+	public void setRuleType(int ruleType) {
+		this.ruleType = ruleType;
+		game.setRule(rules[ruleType-1]);
 	}
 }
 

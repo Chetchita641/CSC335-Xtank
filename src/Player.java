@@ -45,6 +45,7 @@ public class Player implements Runnable {
 			input = new Scanner(socket.getInputStream());
 			//output = new ObjectOutputStream(socket.getOutputStream());
 			output = new PrintWriter(socket.getOutputStream());
+			output.println("rule: " + server.getRule());
 
 			this.name = input.nextLine();
 			this.type = input.nextInt();

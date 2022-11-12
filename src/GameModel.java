@@ -12,6 +12,8 @@ public class GameModel implements Serializable {
 	private String lastChange;
 	private String statusMsg;
 
+	private String rule;
+
 	private long lastTime;
 	
 	private List<Glyph> glyphs;
@@ -70,6 +72,15 @@ public class GameModel implements Serializable {
 		return currentPlayers.size()==1&&tanks.size()>1;
 	}
 
+	public String getRule() {
+		return rule;
+	}
+
+	public void setRule(String rule) {
+		this.rule = rule;
+		lastChange = "rule: " + rule;
+	}
+
 	public synchronized void updateState() {
 		long currentTime = System.nanoTime();
 		double deltaTime = (double) (currentTime-lastTime)/1000000000;
@@ -96,12 +107,29 @@ public class GameModel implements Serializable {
 	 * @param index
 	 */
 	public synchronized void addTank(int index, int type, String name) {
-		this.addTank(index, 300, 500, 0, 0, type, name);
+		int health = Tank.getHealthStat(type);
+		this.addTank(index, type, 300, 500, 0, 0, health, name);
 	}
 	
-	public synchronized void addTank(int playerId, double xCord, double yCord, double rads, double velo, int type, String name) {
+
+	/**
+	 * Creates a new Tank and adds it at the specified index and coordinates in 
+	 * the list of Tanks
+	 * @param index
+	 * @param xCord
+	 * @param yCord
+	public synchronized void addTank(int index, int xCord, int yCord) {
+		Tank t =  new Tank(index, xCord, yCord);
+		tanks.add(index, t);
+		glyphs.add(t);
+		lastChange = "add tanks " + t.toString();
+	}
+	 */
+	
+	public synchronized void addTank(int playerId, int type, double xCord, double yCord, 
+			double rads, double velo, int health, String name) {
 		if(!currentPlayers.contains(playerId)) {
-			Tank t =  new Tank(playerId, type, xCord, yCord, rads, velo, name);
+			Tank t =  new Tank(playerId, type, xCord, yCord, rads, velo, health, name);
 			tanks.add(playerId, t);
 			glyphs.add(t);
 			lastChange = "add tanks " + t.toString();
@@ -189,7 +217,7 @@ public class GameModel implements Serializable {
 		for(Bullet bullet: bullets) {
 			for(Tank tank: tanks) {
 				if(tank.intersects(bullet.getxCord(), bullet.getyCord())) {
-					tank.wasShot(bullet);
+					tank.wasShot(bullet, rule);
 					if (!tank.isActive()) {
 						explode((int) tank.getXCord(), (int) tank.getYCord());
 						statusMsg = tank.getName() + " has been destroyed";

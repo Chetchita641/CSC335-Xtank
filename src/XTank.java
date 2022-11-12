@@ -13,7 +13,11 @@ public class XTank {
 
     	Client client = null;
 		GameModel gameModel = GameModel.getInstance();
+<<<<<<< HEAD
 		//gameModel.setObstacles("maze1.txt");
+=======
+		gameModel.setObstacles("x.txt");
+>>>>>>> refs/heads/Chris
 		try {
 			client = new Client("127.0.0.1", name, type);
 		} catch (Exception e) {
@@ -38,15 +42,11 @@ public class XTank {
 	public static void restart() {
 		Scanner s = new Scanner(System.in);
 
-		/*
+		
     	System.out.println("Enter name:");
     	String name = s.nextLine();
 		System.out.println("Choose your type of tank: (1) Light, (2) Medium, (3) Heavy: ");
 		int type = s.nextInt();
-		*/
-
-		String name = "bob";
-		int type = 3;
 
     	client = null;
 		gameModel = GameModel.getInstance();
