@@ -1,6 +1,10 @@
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
+import java.util.regex.Pattern;
 
 public class GameModel implements Serializable {
 	private static GameModel gameModelInstance;
@@ -30,9 +34,9 @@ public class GameModel implements Serializable {
 		currentPlayers = new ArrayList<Integer>();
 		
 		// test obstacles
-		obstacles.add(new Obstacle(5,5,25,25));
+		/*obstacles.add(new Obstacle(5,5,25,25));
 		obstacles.add(new Obstacle(150,200,25,25));
-		obstacles.add(new Obstacle(25,50,25,25));
+		obstacles.add(new Obstacle(25,50,25,25));*/
 	}
 
 	public static GameModel getInstance() {
@@ -208,5 +212,28 @@ public class GameModel implements Serializable {
 	
 	public synchronized void removePlayer(int playerId) {
 		currentPlayers.remove((Integer)playerId);
+	}
+	
+	public void setObstacles(String fileName) {
+		Scanner scanner = null;
+		try {
+			scanner = new Scanner(new File(fileName));
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		    while (scanner.hasNextLine()) {
+		        createObstacle(scanner.nextLine());
+		    }
+	}
+	
+	private void createObstacle(String line) {
+		int[] values = new int[4];
+	    Scanner rowScanner = new Scanner(line);
+        rowScanner.useDelimiter(",");
+        for(int i=0; i<4; i++) {
+            values[i] = Integer.parseInt(rowScanner.next());
+        }
+		obstacles.add(new Obstacle(values[0],values[1],values[2],values[3]));
+		rowScanner.close();
 	}
 }

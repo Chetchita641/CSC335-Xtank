@@ -16,6 +16,7 @@ public class XTankServer {
 	private XTankServer() {
 		players = new ArrayList<Player>();
     	game = GameModel.getInstance();
+    	game.setObstacles("maze1.txt");
 	}
 	
 	/**
