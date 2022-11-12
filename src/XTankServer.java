@@ -38,21 +38,19 @@ public class XTankServer {
 	 * Starts the server. Begins to accept new clients and add them to the game
 	 */
     public void start() {
-    	
     	GameModelRun gmrun = new GameModelRun(game);
     	Thread gmThread = new Thread(gmrun);
     	gmThread.start();
-        try (ServerSocket listener = new ServerSocket(58901)) {
+    	try (ServerSocket listener = new ServerSocket(58901)){
             System.out.println("XTank Server is Running...");
             ExecutorService pool = Executors.newFixedThreadPool(10);
-            while (true) 
-            {
+            while (true) {
                 Player p = new Player(listener.accept(), game, players.size());
                 players.add(p);
             	pool.execute(p);
             }
-        } catch (IOException e) {
-        	e.printStackTrace();
+    	} catch (IOException e) {
+			e.printStackTrace();
 		}
     }
     
@@ -73,18 +71,34 @@ public class XTankServer {
 		this.mazeType = mazeType;
 		game.setObstacles(mazeFiles[mazeType-1]);
 	}
+
+	public void gameOver() {
+		System.out.println("GAME OVER");
+		for(Player p: players) {
+    		p.end();
+		}
+		game.reset();
+		players.clear();
+	}
 }
 
 class GameModelRun implements Runnable{
 	private GameModel game;
+	private XTankServer server;
+	private boolean exit;
 	
 	public GameModelRun(GameModel g) {
 		game = g;
+		server = XTankServer.getInstance();
+		exit = false;
 	}
 
 	@Override
 	public void run() {
-		while(true) {
+		while(!exit) {
+			if(game.isGameOver()) {
+        		server.gameOver();
+        	}
 			game.updateState();
 		}
 	}

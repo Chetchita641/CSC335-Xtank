@@ -24,6 +24,7 @@ public class XTankUI{
 	private GameModel gameModel = GameModel.getInstance();
 	private int xLimit = 1500;
 	private int yLimit = 900;
+	private boolean gameOverFlag;
 	
 	public void setClient(Client c) {
 		client = c;
@@ -41,6 +42,7 @@ public class XTankUI{
 
 		gc = new GC(canvas);
 
+		gameOverFlag = false;
 		canvas.addPaintListener(event -> {
 		});	
 
@@ -72,6 +74,10 @@ public class XTankUI{
 				else if(e.keyCode==SWT.BS) {
 					gameModel.explode(100, 100);
 				}
+				else if(e.character=='s' && gameOverFlag) {
+					XTank.restart();
+					display.dispose();
+				}
 			}
 			public void keyReleased(KeyEvent e) {}
 		});
@@ -79,6 +85,9 @@ public class XTankUI{
 		final int INTERVAL = 10;
 		Runnable runnable = new Runnable() {
 			public void run() {
+				if(gameOverFlag) {
+					gameOverDisplay();
+				}
 				drawAndAnimate();
 				display.timerExec(INTERVAL, this);
 			}
@@ -98,10 +107,21 @@ public class XTankUI{
 		return display;
 	}
 
+	public void gameOverDisplay() {
+		gc.setBackground(display.getSystemColor(SWT.COLOR_GRAY));
+		gc.drawRectangle(600, 300, 300, 300);
+		gc.drawText("GAME OVER", 300, 600);
+		gc.drawText("Press S to restart", 350, 650);
+	}
+	
+	public void gameOver() {
+		gameOverFlag = true;
+	}
+	
 	public void drawAndAnimate() {
 		List<Tank> tanks = gameModel.getTanks();
 		for (Tank tank : tanks) {
-				drawTank(tank);
+			drawTank(tank);
 		}
 		List<Bullet> bullets = gameModel.getBullets();
 		for (Bullet bullet: bullets) {

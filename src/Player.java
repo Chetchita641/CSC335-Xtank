@@ -15,6 +15,7 @@ public class Player implements Runnable {
 	private int playerId;
 	private GameModel game;
 	private XTankServer server;
+	private boolean exit;
 	
 	/**
 	 * Creates a new Player
@@ -28,6 +29,7 @@ public class Player implements Runnable {
 		this.game = game;
 		this.playerId = playerId;
 		this.server = XTankServer.getInstance();
+		exit = false;
 		//game.addTank(playerId);
 		//server.notifyPlayers();
 	}
@@ -70,33 +72,42 @@ public class Player implements Runnable {
 		output.println(game.getLastChange());
 		output.flush();
 	}
-
+	
 	/**
 	 * Runs a loop to continuously recieve and process commands from the client
 	 */
 	private void processCommands() {
-		while (input.hasNextLine()) {
-			String command = input.nextLine();
-			if(command.equals("move")) {
-				game.moveTank(playerId);
-				server.notifyPlayers();
-			}
-			else if (command.equals("left")) {
-				game.rotateLeft(playerId);
-				server.notifyPlayers();
-			}
-			else if (command.equals("right")) {
-				game.rotateRight(playerId);
-				server.notifyPlayers();
-			}
-			else if(command.equals("shoot")) {
-				game.shoot(playerId);
-				server.notifyPlayers();
-			}
-			else if(command.equals("back")) {
-				game.backward(playerId);
-				server.notifyPlayers();
+		while(!exit) {
+			while (input.hasNextLine()) {
+				String command = input.nextLine();
+				if(command.equals("move")) {
+					game.moveTank(playerId);
+					server.notifyPlayers();
+				}
+				else if (command.equals("left")) {
+					game.rotateLeft(playerId);
+					server.notifyPlayers();
+				}
+				else if (command.equals("right")) {
+					game.rotateRight(playerId);
+					server.notifyPlayers();
+				}
+				else if(command.equals("shoot")) {
+					game.shoot(playerId);
+					server.notifyPlayers();
+				}
+				else if(command.equals("back")) {
+					game.backward(playerId);
+					server.notifyPlayers();
+				}
 			}
 		}
+	}
+
+	public void end() {
+		System.out.println("tell player gae over");
+		output.println("game over");
+		output.flush();
+		//exit = true;
 	}
 }
