@@ -82,6 +82,9 @@ public class Client {
 				else if(response.startsWith("your id")) {
 					processID(response.substring(9));
 				}
+				else if(response.startsWith("set maze")) {
+					processMaze(response.substring(9));
+				}
             	//game.drawAll(ui);
             } while (in.hasNext());
         } 
@@ -195,5 +198,9 @@ public class Client {
 	private void processID(String idInfo) {
 		int playerId = Integer.parseInt(idInfo);
 		game.setAsClient(playerId);
+	}
+	
+	private void processMaze(String mazeInfo) {
+		game.setObstacles(mazeInfo);
 	}
 }

@@ -2,12 +2,15 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class XTankServer {
+	private static final String[] mazeFiles = {"maze1.txt", "maze2.txt", "maze3.txt"};
 	private List<Player> players;
 	private GameModel game;
+	private int mazeType;
 	private static XTankServer instance;
 	
 	/**
@@ -16,7 +19,7 @@ public class XTankServer {
 	private XTankServer() {
 		players = new ArrayList<Player>();
     	game = GameModel.getInstance();
-    	game.setObstacles("maze1.txt");
+    	//game.setObstacles("maze1.txt");
 	}
 	
 	/**
@@ -35,6 +38,7 @@ public class XTankServer {
 	 * Starts the server. Begins to accept new clients and add them to the game
 	 */
     public void start() {
+    	
     	GameModelRun gmrun = new GameModelRun(game);
     	Thread gmThread = new Thread(gmrun);
     	gmThread.start();
@@ -60,6 +64,15 @@ public class XTankServer {
     		p.update();
     	}
     }
+
+	public String getMazeFile() {
+		return mazeFiles[mazeType-1];
+	}
+
+	public void setMaze(int mazeType) {
+		this.mazeType = mazeType;
+		game.setObstacles(mazeFiles[mazeType-1]);
+	}
 }
 
 class GameModelRun implements Runnable{
