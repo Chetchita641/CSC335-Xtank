@@ -12,6 +12,8 @@ public class GameModel implements Serializable {
 	private String lastChange;
 	private String statusMsg;
 
+	private String rule;
+
 	private long lastTime;
 	
 	private List<Glyph> glyphs;
@@ -65,6 +67,15 @@ public class GameModel implements Serializable {
 
 	public List<Explosion> getExplosions() {
 		return explosions;
+	}
+
+	public String getRule() {
+		return rule;
+	}
+
+	public void setRule(String rule) {
+		this.rule = rule;
+		lastChange = "rule: " + rule;
 	}
 
 	public synchronized void updateState() {
@@ -201,7 +212,7 @@ public class GameModel implements Serializable {
 		for(Bullet bullet: bullets) {
 			for(Tank tank: tanks) {
 				if(tank.intersects(bullet.getxCord(), bullet.getyCord())) {
-					tank.wasShot(bullet);
+					tank.wasShot(bullet, rule);
 					if (!tank.isActive()) {
 						explode((int) tank.getXCord(), (int) tank.getYCord());
 						statusMsg = tank.getName() + " has been destroyed";

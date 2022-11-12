@@ -221,9 +221,13 @@ public class Tank extends Glyph{
 		return isClient;
 	}
 
-	public void wasShot(Bullet bullet) {
+	public void wasShot(Bullet bullet, String rule) {
 		System.out.println("a tank was shot");
-		health-=bullet.getDamage();
+		if (rule.equals("oneshot")) {
+			health = 0;
+		} else {
+			health-=bullet.getDamage();
+		}
 		health = Math.max(health, 0);
 		if(health==0) {
 			isActive = false;

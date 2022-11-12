@@ -6,6 +6,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class XTankServer {
+	private final String rule = "classic";
+	
 	private List<Player> players;
 	private GameModel game;
 	private static XTankServer instance;
@@ -16,7 +18,9 @@ public class XTankServer {
 	private XTankServer() {
 		players = new ArrayList<Player>();
     	game = GameModel.getInstance();
-    	game.setObstacles("maze1.txt");
+    	game.setObstacles("x.txt");
+		
+		game.setRule(rule);
 	}
 	
 	/**
@@ -29,6 +33,10 @@ public class XTankServer {
 			instance = new XTankServer();
 		}
 		return instance;
+	}
+
+	public String getRule() {
+		return rule;
 	}
 	
 	/**

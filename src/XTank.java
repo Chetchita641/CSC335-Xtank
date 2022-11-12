@@ -11,7 +11,7 @@ public class XTank {
 
     	Client client = null;
 		GameModel gameModel = GameModel.getInstance();
-		gameModel.setObstacles("maze1.txt");
+		gameModel.setObstacles("x.txt");
 		try {
 			client = new Client("127.0.0.1", name, type);
 		} catch (Exception e) {

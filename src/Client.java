@@ -85,6 +85,9 @@ public class Client {
 				else if(response.startsWith("your id")) {
 					processID(response.substring(9));
 				}
+				else if(response.startsWith("rule")) {
+					processRule(response.substring(6));
+				}
             	//game.drawAll(ui);
             } while (in.hasNext());
         } 
@@ -208,5 +211,9 @@ public class Client {
 	private void processID(String idInfo) {
 		playerId = Integer.parseInt(idInfo);
 		game.setAsClient(playerId);
+	}
+
+	private void processRule(String rule) {
+		game.setRule(rule);
 	}
 }

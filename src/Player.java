@@ -43,6 +43,7 @@ public class Player implements Runnable {
 			input = new Scanner(socket.getInputStream());
 			//output = new ObjectOutputStream(socket.getOutputStream());
 			output = new PrintWriter(socket.getOutputStream());
+			output.println("rule: " + server.getRule());
 
 			this.name = input.nextLine();
 			this.type = input.nextInt();
@@ -51,6 +52,7 @@ public class Player implements Runnable {
 			//output.writeObject("hi " + name);
 			output.println("hi " + name);
 			output.println("add tanks " + game.listTanks());
+
 			System.out.println(game.listTanks());
 			server.notifyPlayers();
 			output.println("your id: " + playerId);
