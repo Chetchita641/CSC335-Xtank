@@ -1,17 +1,20 @@
+/**
+ * Author: Chris Macholtz
+ * File name: XTankUI.java
+ * Course: CSC 335
+ * Assignment: XTank A3
+ * Purpose: UI for XTank, which belongs to the Client. Handles key listeners, status updates, and draws 
+ * all assets on the user's window. Regularly interacts and pushes forward the GameModel on a set interval.
+ */
 import java.util.List;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.GC;
-import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Canvas;
@@ -46,26 +49,17 @@ public class XTankUI{
 		layout.marginLeft = 0;
 		shell.setLayout(layout);
 
+		// Game area
 		canvas = new Canvas(shell, SWT.NO_REDRAW_RESIZE | SWT.DOUBLE_BUFFERED);
 		canvas.setLayoutData(new RowData(xLimit, yLimit));
 		canvas.setBackground(display.getSystemColor(SWT.COLOR_BLACK));
 
 		gc = new GC(canvas);
 
+		// Key listeners
 		gameOverFlag = false;
-		canvas.addPaintListener(event -> {
-		});	
-
-		canvas.addMouseListener(new MouseListener() {
-			public void mouseDown(MouseEvent e) {
-			} 
-			public void mouseUp(MouseEvent e) {} 
-			public void mouseDoubleClick(MouseEvent e) {} 
-		});
-
 		canvas.addKeyListener(new KeyListener() {
 			public void keyPressed(KeyEvent e) {
-				// update tank location
 				if(e.keyCode==SWT.ARROW_UP) {
 					client.move();
 				}
@@ -93,6 +87,7 @@ public class XTankUI{
 			public void keyReleased(KeyEvent e) {}
 		});
 
+		// Status bar
 		Group statusBarGroup = new Group(shell, SWT.NONE);
 		statusBarGroup.setLayoutData(new RowData(xLimit, 50));
 		
@@ -103,6 +98,7 @@ public class XTankUI{
 		statusMessage.setLocation(10, 10);
 		statusMessage.pack();
 
+		// Refresh interval
 		final int INTERVAL = 10;
 		Runnable runnable = new Runnable() {
 			public void run() {
@@ -129,10 +125,17 @@ public class XTankUI{
 		display.dispose();		
 	}
 
+	/**
+	 * Gets the current display object
+	 * @return display object
+	 */
 	public Display getDisplay() {
 		return display;
 	}
 
+	/**
+	 * Displays "Game Over" when only one player is left in a cool, retro way
+	 */
 	public void gameOverDisplay() {
 		gc.setBackground(display.getSystemColor(SWT.COLOR_GRAY));
 		gc.drawRectangle(600, 300, 300, 300);
@@ -140,10 +143,16 @@ public class XTankUI{
 		gc.drawText("Press S to restart", 350, 650);
 	}
 	
+	/**
+	 * Flips the gameOverFlag. Used by GameModel
+	 */
 	public void gameOver() {
 		gameOverFlag = true;
 	}
 	
+	/**
+	 * Method used for updating the game's assets
+	 */
 	public void drawAndAnimate() {
 		List<Tank> tanks = gameModel.getTanks();
 		for (Tank tank : tanks) {
@@ -165,6 +174,10 @@ public class XTankUI{
 		canvas.redraw();
 	}
 	
+	/**
+	 * Draws a bullet on the player's screen. Bullet is drawn in the same shape as the shooter's tank
+	 * @param bullet	- Bullet object
+	 */
 	private void drawBullet(Bullet bullet) {
 		double radians = bullet.getRadians();
 		double x = bullet.getxCord();
@@ -173,13 +186,17 @@ public class XTankUI{
 		Display.getDefault().asyncExec(new Runnable() {
 			 public void run() {
 				//gameModel.intersectsTank(bullet);
-				int[] cords = calcTriangleCords(x , y, radians, 10, 20, type);
+				int[] cords = calcTankCords(x , y, radians, 10, 20, type);
 				gc.setBackground(display.getSystemColor(SWT.COLOR_RED));
 				gc.fillPolygon(cords);
 			 }
 			});
 	}
 
+	/**
+	 * Draws a tank on the player's window. Shape is determined by the tank type.
+	 * @param tank	- Tank object
+	 */
 	public void drawTank(Tank tank) {
 		double radians = tank.getRadians();
 		double x = tank.getXCord();
@@ -197,7 +214,7 @@ public class XTankUI{
 					else {
 						tankColor = display.getSystemColor(SWT.COLOR_WHITE);
 					}
-					int[] cords = calcTriangleCords(x, y, radians, width, height, type);
+					int[] cords = calcTankCords(x, y, radians, width, height, type);
 					gc.setBackground(tankColor);
 					gc.fillPolygon(cords);
 					gc.setBackground(display.getSystemColor(SWT.COLOR_BLACK));
@@ -209,7 +226,17 @@ public class XTankUI{
 			});
 	}
 
-	private int[] calcTriangleCords(double x, double y,
+	/**
+	 * Calculates and returns coordinates for the Tank polygon, according to the tank's type. 
+	 * @param x			- x-coordinate
+	 * @param y			- y-coordinate
+	 * @param radians	- Radians used for rotation
+	 * @param width		- Width of the tank
+	 * @param height	- Height of the tank
+	 * @param type		- Type of tank
+	 * @return Coordinates used for drawing the polygon
+	 */
+	private int[] calcTankCords(double x, double y,
 			double radians, double width, double height, int type) {
 
 		switch (type) {
@@ -226,9 +253,19 @@ public class XTankUI{
 		return null;
 	}
 
+	/**
+	 * Calculates the coordinates used to draw a Light tank
+	 * @param x			- x-coordinates
+	 * @param y			- y-coordinates
+	 * @param radians	- Radians used for rotation
+	 * @param width		- Width of tank
+	 * @param height	- Height of tank
+	 * @return Coordinate used for drawing the polygon
+	 */
 	private int[] lightTankCords(double x, double y,
 			double radians, double width, double height) {
 		
+		// Convert tank's dimensions into polar coordinates to handle rotation
 		double ra, rb, rc, rd;
 		ra = height/2;
 		rb = Math.sqrt(Math.pow(width/2,2)+Math.pow(height/2, 2));
@@ -256,9 +293,19 @@ public class XTankUI{
 		return cords;
 	}
 
+	/**
+	 * Calculates the coordinates used to draw a Medium tank
+	 * @param x			- x-coordinates
+	 * @param y			- y-coordinates
+	 * @param radians	- Radians used for rotation
+	 * @param width		- Width of tank
+	 * @param height	- Height of tank
+	 * @return Coordinate used for drawing the polygon
+	 */
 	private int[] mediumTankCords(double x, double y,
 			double radians, double width, double height) {
 		
+		// Convert tank's dimensions into polar coordinates to handle rotation
 		double ra, rb, rc;
 		ra = height/2;
 		rb = Math.sqrt(Math.pow(width/2,2)+Math.pow(height/2, 2));
@@ -283,9 +330,19 @@ public class XTankUI{
 
 	}
 
+	/**
+	 * Calculates the coordinates used to draw a Heavy tank
+	 * @param x			- x-coordinates
+	 * @param y			- y-coordinates
+	 * @param radians	- Radians used for rotation
+	 * @param width		- Width of tank
+	 * @param height	- Height of tank
+	 * @return Coordinate used for drawing the polygon
+	 */
 	private int[] heavyTankCords(double x, double y, 
 			double radians, double width, double height) {
 
+		// Convert tank's dimensions into polar coordinates to handle rotation
 		double ra, rb, rc, rd, re, rf;
 		ra = height/2;
 		rb = Math.sqrt(Math.pow(width/2, 2)+Math.pow(height/4, 2));
@@ -320,7 +377,11 @@ public class XTankUI{
 
 		return cords;
 	}
-	
+
+	/**
+	 * Draws an obstacle on the player's window
+	 * @param obstacle	- Obstacle object
+	 */
 	public void drawObstacle(Obstacle obstacle) {
 		int x = obstacle.getXCord();
 		int y = obstacle.getYCord();
@@ -334,6 +395,10 @@ public class XTankUI{
 		});
 	}
 
+	/**
+	 * Draws an explosion on the player's window
+	 * @param explosion	- Explosion object
+	 */
 	public void drawExplosion(Explosion explosion) {
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
@@ -350,6 +415,10 @@ public class XTankUI{
 
 	}
 
+	/**
+	 * Gets the status message from the GameModel to show to the player. Also includes their name, tank type, health, and rule of the game
+	 * @return A status message
+	 */
 	private String getStatusMessage() {
 		Tank tank = gameModel.getTank(client.getPlayerId());
 		String nameMsg = String.format("Name: %s    ", client.getName());

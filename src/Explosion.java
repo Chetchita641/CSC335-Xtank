@@ -1,3 +1,10 @@
+/**
+ * Author: Chris Macholtz
+ * File name: Explosion.java
+ * Course: CSC 335
+ * Assignment: XTank A3
+ * Purpose: Explosion object. Spawns a random number of particles with random lifespans
+ */
 import java.util.Random;
 
 public class Explosion extends Glyph {
@@ -35,6 +42,10 @@ public class Explosion extends Glyph {
         return false;
     }
 
+    /**
+     * Updates each of the particles on their trajectories. If lifespan is done, does not update
+     * @param deltaTime - Amount of time since last update
+     */
     @Override
     public void update(double deltaTime) {
         if (lifespan > 0) {
@@ -48,6 +59,10 @@ public class Explosion extends Glyph {
         }
     }
 
+    /**
+     * Gets the particles
+     * @return array of particles
+     */
     public Particle[] getParticles() { return particles; }
 
     @Override
