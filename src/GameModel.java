@@ -69,7 +69,10 @@ public class GameModel implements Serializable {
 	 * @return Tank associated with player ID
 	 */
 	public Tank getTank(int playerId) {
-		return tanks.get(playerId);
+		if(playerId>=0&&playerId<tanks.size()) {
+			return tanks.get(playerId);
+		}
+		return null;
 	}
 
 	/**
@@ -192,8 +195,10 @@ public class GameModel implements Serializable {
 	 * @param playerId	- Id number of the player 
 	 */
 	public synchronized void moveTank(int playerId) {
-		tanks.get(playerId).move();
-		lastChange = "move: player " + playerId;
+		if(playerId>=0&&playerId<tanks.size()) {
+			tanks.get(playerId).move();
+			lastChange = "move: player " + playerId;
+		}
 	}
 
 	/**
@@ -201,8 +206,10 @@ public class GameModel implements Serializable {
 	 * @param playerId	- Id number of the player
 	 */
 	public synchronized void rotateLeft(int playerId) {
-		tanks.get(playerId).rotateLeft();
-		lastChange = "left: player " + playerId;
+		if(playerId>=0&&playerId<tanks.size()) {
+			tanks.get(playerId).rotateLeft();
+			lastChange = "left: player " + playerId;
+		}
 	}
 
 	/**
@@ -210,8 +217,10 @@ public class GameModel implements Serializable {
 	 * @param playerId	- Id number of the player
 	 */
 	public synchronized void rotateRight(int playerId) {
-		tanks.get(playerId).rotateRight();
-		lastChange = "right: player " + playerId;
+		if(playerId>=0&&playerId<tanks.size()) {
+			tanks.get(playerId).rotateRight();
+			lastChange = "right: player " + playerId;
+		}
 	}
 
 	/**
@@ -219,8 +228,10 @@ public class GameModel implements Serializable {
 	 * @param playerId	- Id number of the player
 	 */
 	public synchronized void backward(int playerId) {
-		tanks.get(playerId).backward();
-		lastChange = "back: player " + playerId;
+		if(playerId>=0&&playerId<tanks.size()) {
+			tanks.get(playerId).backward();
+			lastChange = "back: player " + playerId;
+		}
 	}
 	
 	/**
@@ -228,10 +239,12 @@ public class GameModel implements Serializable {
 	 * @param playerId	- Id number of the player
 	 */
 	public synchronized void shoot(int playerId) {
-		Bullet bullet = tanks.get(playerId).shoot();
-		bullets.add(bullet);
-		glyphs.add(bullet);
-		lastChange = "shoot: player " + playerId;
+		if(playerId>=0&&playerId<tanks.size()) {
+			Bullet bullet = tanks.get(playerId).shoot();
+			bullets.add(bullet);
+			glyphs.add(bullet);
+			lastChange = "shoot: player " + playerId;
+		}
 	}
 
 	/**
@@ -288,7 +301,9 @@ public class GameModel implements Serializable {
 	 * @param playerId	- Id number for the player
 	 */
 	public void setAsClient(int playerId) {
-		tanks.get(playerId).setClientTank();
+		if(playerId>=0&&playerId<tanks.size()) {
+			tanks.get(playerId).setClientTank();
+		}
 	}
 	
 	/**
