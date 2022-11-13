@@ -1,14 +1,19 @@
-import java.io.IOException;
-import java.io.ObjectOutputStream;
+/**
+ * Author: Grace Driskill
+ * File name: Player.java
+ * Course: CSC 335
+ * Assignment: XTank A3
+ * Purpose: Represents a player in XTank on the server side of the game.
+ * 	Contains the input and output stream for a single socket, and is 
+ * 	responsible for the communication with that client.
+ */
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.Arrays;
 import java.util.Scanner;
 
 public class Player implements Runnable {
 	private Socket socket;
 	private Scanner input;
-	//private ObjectOutputStream output;
 	private PrintWriter output;
 	private String name;
 	private int type;
@@ -30,8 +35,6 @@ public class Player implements Runnable {
 		this.playerId = playerId;
 		this.server = XTankServer.getInstance();
 		exit = false;
-		//game.addTank(playerId);
-		//server.notifyPlayers();
 	}
 
 	/**
@@ -43,7 +46,6 @@ public class Player implements Runnable {
 	public void run() {
 		try {
 			input = new Scanner(socket.getInputStream());
-			//output = new ObjectOutputStream(socket.getOutputStream());
 			output = new PrintWriter(socket.getOutputStream());
 			output.println("rule: " + server.getRule());
 
@@ -51,7 +53,6 @@ public class Player implements Runnable {
 			this.type = input.nextInt();
 			game.addTank(playerId, type, name);
 
-			//output.writeObject("hi " + name);
 			output.println("hi " + name);
 			output.println("set maze " + server.getMazeFile());
 			output.println("add tanks " + game.listTanks());
@@ -75,7 +76,7 @@ public class Player implements Runnable {
 	}
 	
 	/**
-	 * Runs a loop to continuously recieve and process commands from the client
+	 * Runs a loop to continuously receive and process commands from the client
 	 */
 	private void processCommands() {
 		while(!exit) {
@@ -105,10 +106,14 @@ public class Player implements Runnable {
 		}
 	}
 
+	/**
+	 * Alerts the client that the game is over and ends this Player's 
+	 * process commands loop.
+	 */
 	public void end() {
 		System.out.println("tell player gae over");
 		output.println("game over");
 		output.flush();
-		//exit = true;
+		exit = true;
 	}
 }

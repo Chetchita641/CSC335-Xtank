@@ -1,8 +1,15 @@
+/**
+ * Author: Grace Driskill
+ * File name: Client.java
+ * Course: CSC 335
+ * Assignment: XTank A3
+ * Purpose: Handles the client side communication with the server.
+ * 	Receives updates for the GameModel from the server, and sends
+ * 	commands about this player's actions to the server.
+ */
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.Scanner;
 
 /**
@@ -13,10 +20,10 @@ public class Client {
     private Scanner in;
     private PrintWriter out;
     private GameModel game;
-    private XTankUI ui;
-
+    //private XTankUI ui;
 	private int playerId;
 	private String name;
+	
     /**
      * Creates a new Client for XTank
      * @param serverAddress the server to connect to
@@ -41,13 +48,13 @@ public class Client {
      * Sets the XTankUI to use for this Client
      * @param ui
      */
-    public void setUI(XTankUI ui) {
+    /*public void setUI(XTankUI ui) {
     	this.ui = ui;
     }
 
 	public XTankUI getUI() {
 		return ui;
-	}
+	}*/
     
     /**
      * Starts the game play for this Client
@@ -105,23 +112,32 @@ public class Client {
     }
 
 	/**
-	 * Sends command to server this Client's tank
+	 * Sends command to server to move this Client's tank
 	 */
 	public void move() {
 		out.println("move");
 		out.flush();
 	}
 
+	/**
+	 * Sends command to server to left rotate this Client's tank
+	 */
 	public void rotateLeft() {
 		out.println("left");
 		out.flush();
 	}
 
+	/**
+	 * Sends command to server to right rotate this Client's tank
+	 */
 	public void rotateRight() {
 		out.println("right");
 		out.flush();
 	}
 
+	/**
+	 * Sends command to server to move back this Client's tank
+	 */
 	public void backward() {
 		out.println("back");
 		out.flush();
@@ -135,10 +151,16 @@ public class Client {
 		out.flush();
 	}
 
+	/**
+	 * Return's this Client's player id 
+	 */
 	public int getPlayerId() {
 		return playerId;
 	}
 
+	/**
+	 * Returns this Client's name 
+	 */
 	public String getName() {
 		return name;
 	}
@@ -186,20 +208,35 @@ public class Client {
 	 * @param moveInfo information from the server on which tank to move
 	 */
 	private void processMove(String moveInfo) {
-		playerId = Integer.parseInt(moveInfo);
-		game.moveTank(playerId);
+		int player = Integer.parseInt(moveInfo);
+		game.moveTank(player);
 	}
 
+	/**
+	 * Processes a left command. This will rotate the one of the tanks in the
+	 * GameModel
+	 * @param moveInfo information from the server on which tank to move
+	 */
 	private void processLeft(String leftInfo) {
 		playerId = Integer.parseInt(leftInfo);
 		game.rotateLeft(playerId);
 	}
 	
+	/**
+	 * Processes a move command. This will move the one of the tanks in the
+	 * GameModel
+	 * @param moveInfo information from the server on which tank to move
+	 */
 	private void processRight(String rightInfo) {
 		playerId = Integer.parseInt(rightInfo);
 		game.rotateRight(playerId);
 	}
-
+	
+	/**
+	 * Processes a move command. This will move the one of the tanks in the
+	 * GameModel
+	 * @param moveInfo information from the server on which tank to move
+	 */
 	private void processBack(String backInfo) {
 		playerId = Integer.parseInt(backInfo);
 		game.backward(playerId);

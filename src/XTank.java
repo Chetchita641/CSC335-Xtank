@@ -5,7 +5,17 @@ public class XTank {
 	private static Client client;
 	private static GameModel gameModel;
 	
+	private static String name;
+	private static int type;
+	
 	public static void main(String [] args) {
+		Scanner s = new Scanner(System.in);
+		System.out.println("Enter name:");
+    	name = s.nextLine();
+		System.out.println("Choose your type of tank: (1) Light, (2) Medium, (3) Heavy: ");
+		type = s.nextInt();
+		s.close();
+		
 		restart();
 		
 		/*String name = "bob";
@@ -40,14 +50,6 @@ public class XTank {
 	}
 	
 	public static void restart() {
-		Scanner s = new Scanner(System.in);
-
-		
-    	System.out.println("Enter name:");
-    	String name = s.nextLine();
-		System.out.println("Choose your type of tank: (1) Light, (2) Medium, (3) Heavy: ");
-		int type = s.nextInt();
-
     	client = null;
 		gameModel = GameModel.getInstance();
 		gameModel.reset();
@@ -59,14 +61,13 @@ public class XTank {
 		}
     	ui = new XTankUI();
     	ui.setClient(client);
-    	client.setUI(ui);
+    	//client.setUI(ui);
     	ClientRun cr = new ClientRun(client);
     	UIRun ur = new UIRun(ui);
     	Thread clientThread = new Thread(cr);
     	Thread uiThread = new Thread(ur);
     	uiThread.start();
     	clientThread.start();
-    	s.close();
 	}
 }
 

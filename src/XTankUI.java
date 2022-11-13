@@ -119,8 +119,11 @@ public class XTankUI{
 
 		shell.open();
 		while (!shell.isDisposed()) {
+			try {
 			if (!display.readAndDispatch())
 				display.sleep();
+			}
+			catch (org.eclipse.swt.SWTException e) {}
 		} 
 
 		display.dispose();		

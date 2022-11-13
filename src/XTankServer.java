@@ -1,8 +1,18 @@
+/**
+ * Author: Grace Driskill
+ * File name: XTankServer.java
+ * Course: CSC 335
+ * Assignment: XTank A3
+ * Purpose: Server for the XTank game. The server is responsible for 
+ * 	keeping track of Players, which are each one client of the server.
+ * 	The server sends updates to each client about which rules to use, 
+ * 	new tanks, ect. The server receives from the clients the commands
+ * 	being execute such as moving forward, shooting, ect. 
+ */
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -17,14 +27,11 @@ public class XTankServer {
 	private static XTankServer instance;
 	
 	/**
-	 * Creates a new XTankSever, with no player and empty GameModel
+	 * Creates a new XTankSever, with no players and empty GameModel
 	 */
 	private XTankServer() {
 		players = new ArrayList<Player>();
-    	game = GameModel.getInstance();
-
-    	game.setObstacles("x.txt");
-		
+    	game = GameModel.getInstance();		
 	}
 	
 	/**
@@ -69,8 +76,11 @@ public class XTankServer {
     	}
     }
     
+    /**
+     * Function for ending and reseting the XTank game. Sends a notification
+     * to each player, resets the GameModel and empties the Player list.
+     */
 	public void gameOver() {
-		System.out.println("GAME OVER");
 		for(Player p: players) {
     		p.end();
 		}
@@ -78,44 +88,71 @@ public class XTankServer {
 		players.clear();
 	}
 
+	/**
+	 * Returns the source file being used for the maze
+	 */
 	public String getMazeFile() {
 		return mazeFiles[mazeType-1];
 	}
 	
+	/**
+	 * Returns which rules set is being used (classic or oneshot) 
+	 */
 	public String getRule() {
 		return rules[ruleType-1];
 	}
 
+	/**
+	 * Sets the maze selection (arena, forest or X)
+	 * @param mazeType int 1-3 for one of the three mazes
+	 */
 	public void setMaze(int mazeType) {
 		this.mazeType = mazeType;
 		game.setObstacles(mazeFiles[mazeType-1]);
 	}
 
+	/**
+	 * Sets the rule type (classic or oneshot)
+	 * @param ruleType int 1-2 for one of the rules sets
+	 */
 	public void setRuleType(int ruleType) {
 		this.ruleType = ruleType;
 		game.setRule(rules[ruleType-1]);
 	}
-}
-
-class GameModelRun implements Runnable{
-	private GameModel game;
-	private XTankServer server;
-	private boolean exit;
 	
-	public GameModelRun(GameModel g) {
-		game = g;
-		server = XTankServer.getInstance();
-		exit = false;
-	}
+	private class GameModelRun implements Runnable {
+		/**
+		 * GameModelRun is a Runnable to continuously update the GameModel's
+		 * state and check if the game is over.
+		 */
+		private GameModel game;
+		private XTankServer server;
+		private boolean exit;
+		
+		/**
+		 * Creates a new GameModelRun for the specified GameModel
+		 * @param g
+		 */
+		public GameModelRun(GameModel g) {
+			game = g;
+			server = XTankServer.getInstance();
+			exit = false;
+		}
 
-	@Override
-	public void run() {
-		while(!exit) {
-			if(game.isGameOver()) {
-        		server.gameOver();
-        	}
-			game.updateState();
+		/**
+		 * Updates the game's state and alerts server when the game is 
+		 * over
+		 */
+		@Override
+		public void run() {
+			while(!exit) {
+				if(game.isGameOver()) {
+	        		server.gameOver();
+	        	}
+				game.updateState();
+			}
 		}
 	}
 }
+
  
