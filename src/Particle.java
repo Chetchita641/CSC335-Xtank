@@ -27,16 +27,11 @@ public class Particle extends Glyph {
         radians = rand.nextDouble()*2*Math.PI;
         velocity = rand.nextDouble()*MAX_VELOCITY;
     }
-
-    @Override
-    public void draw(XTankUI ui) {
-        // Not used
-    }
     
-    @Override 
-    public void move() {
-        // Not used
-    }
+    @Override
+	public void draw(XTankUI ui) {
+		// Not used
+	}
 
     @Override
     public boolean intersects(double x, double y) {

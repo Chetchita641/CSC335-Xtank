@@ -105,6 +105,14 @@ public class GameModel implements Serializable {
 	}
 	
 	/**
+	 * Gets the array of gylphs
+	 * @return array of glyphs
+	 */
+	public List<Glyph> getGlyphs() {
+		return glyphs;
+	}
+	
+	/**
 	 * Checks if any players are left on the field
 	 * @return true if there are, false if not
 	 */
@@ -135,7 +143,7 @@ public class GameModel implements Serializable {
 	public synchronized void updateState() {
 		long currentTime = System.nanoTime();
 		double deltaTime = (double) (currentTime-lastTime)/1000000000; // how much time has passed in seconds
-		for (Glyph g : glyphs) {
+		for (Glyph g : List.copyOf(glyphs)) {
 			g.update(deltaTime);
 		}
 		checkTankBulletIntersection();		
@@ -146,11 +154,11 @@ public class GameModel implements Serializable {
 	 * Draws every Gylph in the specified XTankUI
 	 * @param ui
 	 */
-	public void drawAll(XTankUI ui) {
+	/*public void drawAll(XTankUI ui) {
 		for(Glyph g: glyphs) {
 			g.draw(ui);
 		}
-	}
+	}*/
 	
 	/**
 	 * Creates a new Tank and adds it at the specified index in the list
@@ -301,7 +309,7 @@ public class GameModel implements Serializable {
 		List<Bullet> toRemove = new ArrayList<Bullet>();
 		for(Bullet bullet: bullets) {
 			for(Tank tank: tanks) {
-				if(tank.intersects(bullet.getxCord(), bullet.getyCord())) {
+				if(tank.intersects(bullet.getXCord(), bullet.getYCord())) {
 					tank.wasShot(bullet, rule);
 					if (!tank.isActive()) {
 						explode((int) tank.getXCord(), (int) tank.getYCord());
@@ -312,6 +320,7 @@ public class GameModel implements Serializable {
 			}
 		}
 		bullets.removeAll(toRemove);
+		glyphs.removeAll(toRemove);
 	}
 
 	/**
@@ -334,6 +343,7 @@ public class GameModel implements Serializable {
 	 */
 	public synchronized void destroyBullet(Bullet bullet) {
 		bullets.remove(bullet);
+		glyphs.remove(bullet);
 	}
 	
 	/**
@@ -372,7 +382,9 @@ public class GameModel implements Serializable {
         for(int i=0; i<4; i++) {
             values[i] = Integer.parseInt(rowScanner.next());
         }
-		obstacles.add(new Obstacle(values[0],values[1],values[2],values[3]));
+        Obstacle obstacle = new Obstacle(values[0],values[1],values[2],values[3]);
+		obstacles.add(obstacle);
+		glyphs.add(obstacle);
 		rowScanner.close();
 	}
 }

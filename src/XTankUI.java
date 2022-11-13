@@ -154,6 +154,9 @@ public class XTankUI{
 	 * Method used for updating the game's assets
 	 */
 	public void drawAndAnimate() {
+		/*for(Glyph glyph: gameModel.getGlyphs()) {
+			glyph.draw(this);
+		}*/
 		List<Tank> tanks = gameModel.getTanks();
 		for (Tank tank : tanks) {
 			drawTank(tank);
@@ -164,11 +167,11 @@ public class XTankUI{
 		}
 		
 		for(Obstacle obstacle : gameModel.getObstacles()) {
-			obstacle.draw(this);
+			drawObstacle(obstacle);
 		}
 
 		for (Explosion explosion : gameModel.getExplosions()) {
-			explosion.draw(this);
+			drawExplosion(explosion);
 		}
 		gameModel.updateState();
 		canvas.redraw();
@@ -178,14 +181,13 @@ public class XTankUI{
 	 * Draws a bullet on the player's screen. Bullet is drawn in the same shape as the shooter's tank
 	 * @param bullet	- Bullet object
 	 */
-	private void drawBullet(Bullet bullet) {
+	public void drawBullet(Bullet bullet) {
 		double radians = bullet.getRadians();
-		double x = bullet.getxCord();
-		double y = bullet.getyCord();
+		double x = bullet.getXCord();
+		double y = bullet.getYCord();
 		int type = bullet.getType();
 		Display.getDefault().asyncExec(new Runnable() {
 			 public void run() {
-				//gameModel.intersectsTank(bullet);
 				int[] cords = calcTankCords(x , y, radians, 10, 20, type);
 				gc.setBackground(display.getSystemColor(SWT.COLOR_RED));
 				gc.fillPolygon(cords);
@@ -383,8 +385,8 @@ public class XTankUI{
 	 * @param obstacle	- Obstacle object
 	 */
 	public void drawObstacle(Obstacle obstacle) {
-		int x = obstacle.getXCord();
-		int y = obstacle.getYCord();
+		int x = (int) obstacle.getXCord();
+		int y = (int) obstacle.getYCord();
 		int width = obstacle.getWidth();
 		int height = obstacle.getHeight();
 		Display.getDefault().asyncExec(new Runnable() {

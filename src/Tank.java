@@ -1,4 +1,10 @@
-
+/**
+ * Author: Chris Macholtz
+ * File name: Tank.java
+ * Course: CSC 335
+ * Assignment: XTank A3
+ * Purpose: Represents an individual tank in XTank
+ */
 public class Tank extends Glyph{
 	private static final int LIGHT_WIDTH = 15;
 	private static final int MEDIUM_WIDTH = 20;
@@ -40,11 +46,6 @@ public class Tank extends Glyph{
 	private boolean isClient;
 	private GameModel game;
 
-	/*
-	public Tank(int pId, double x, double y) {
-		new Tank(pId, x, y, 0, 0, 100);
-	}
-	*/
 	
 	public Tank(int pId, int type, double x, double y, double radians, double velocity, int health, String name) {
 		this.xCord = x;
@@ -132,17 +133,6 @@ public class Tank extends Glyph{
 		return name;
 	}
 	
-	/*@Override
-	public void draw(XTankUI ui) {
-		ui.drawTank(xCord, yCord, radians);
-	}*/
-	
-	@Override
-	public void draw(XTankUI ui) {
-		ui.drawTank(this);
-	}
-
-	@Override
 	public void move() {
 		velocity += acceleration;
 		velocity = Math.min(velocity, MAX_VELOCITY);
@@ -155,6 +145,11 @@ public class Tank extends Glyph{
 		update(deltaTime);
 	}
 
+	@Override
+	public void draw(XTankUI ui) {
+		ui.drawTank(this);
+	}
+	
 	@Override
 	public boolean intersects(double x, double y) {
 		// check if point intersections with a circle centered on the tank
@@ -233,7 +228,6 @@ public class Tank extends Glyph{
 	}
 
 	public void wasShot(Bullet bullet, String rule) {
-		System.out.println("a tank was shot");
 		if (rule.equals("oneshot")) {
 			health = 0;
 		} else {

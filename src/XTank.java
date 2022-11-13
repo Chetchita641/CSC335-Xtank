@@ -1,3 +1,10 @@
+/**
+ * Author: Grace Driskill
+ * File name: Obstacle.java
+ * Course: CSC 335
+ * Assignment: XTank A3
+ * Purpose: Starts the client side of XTank
+ */
 import java.util.Scanner;
 
 public class XTank {
@@ -17,32 +24,6 @@ public class XTank {
 		s.close();
 		
 		restart();
-		
-		/*String name = "bob";
-		int type = 3;
-
-    	Client client = null;
-		GameModel gameModel = GameModel.getInstance();
-<<<<<<< HEAD
-		//gameModel.setObstacles("maze1.txt");
-=======
-		gameModel.setObstacles("x.txt");
->>>>>>> refs/heads/Chris
-		try {
-			client = new Client("127.0.0.1", name, type);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-    	XTankUI ui = new XTankUI();
-    	ui.setClient(client);
-    	client.setUI(ui);
-    	ClientRun cr = new ClientRun(client);
-    	UIRun ur = new UIRun(ui);
-    	Thread clientThread = new Thread(cr);
-    	Thread uiThread = new Thread(ur);
-    	uiThread.start();
-    	clientThread.start();
-    	s.close();*/
 	}
 	
 	public static void gameOver() {
@@ -53,7 +34,6 @@ public class XTank {
     	client = null;
 		gameModel = GameModel.getInstance();
 		gameModel.reset();
-		//gameModel.setObstacles("maze1.txt");
 		try {
 			client = new Client("127.0.0.1", name, type);
 		} catch (Exception e) {
@@ -61,7 +41,6 @@ public class XTank {
 		}
     	ui = new XTankUI();
     	ui.setClient(client);
-    	//client.setUI(ui);
     	ClientRun cr = new ClientRun(client);
     	UIRun ur = new UIRun(ui);
     	Thread clientThread = new Thread(cr);

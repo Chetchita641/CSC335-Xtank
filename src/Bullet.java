@@ -69,18 +69,6 @@ public class Bullet extends Glyph {
 	}
 
 	@Override
-	public void draw(XTankUI ui) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void move() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public boolean intersects(double x, double y) {
 		// TODO Auto-generated method stub
 		return false;
@@ -118,11 +106,16 @@ public class Bullet extends Glyph {
 		}
 	}
 
-	public double getxCord() {
+	@Override
+	public void draw(XTankUI ui) {
+		ui.drawBullet(this);
+	}
+	
+	public double getXCord() {
 		return xCord;
 	}
 
-	public double getyCord() {
+	public double getYCord() {
 		return yCord;
 	}
 

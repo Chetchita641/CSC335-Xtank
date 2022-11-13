@@ -28,14 +28,11 @@ public class Explosion extends Glyph {
             this.particles[i] = new Particle(x, y, rand.nextDouble()*lifespan);
         }
     }
-
+    
     @Override
-    public void draw(XTankUI ui) {
-        ui.drawExplosion(this);
-    }
-
-    @Override
-    public void move() {}
+	public void draw(XTankUI ui) {
+		ui.drawExplosion(this);
+	}
 
     @Override
     public boolean intersects(double x, double y) {
@@ -69,4 +66,14 @@ public class Explosion extends Glyph {
     public String toString() {
         return String.format("(%d, %d)", xCord, yCord);
     }
+
+	@Override
+	public double getXCord() {
+		return xCord;
+	}
+
+	@Override
+	public double getYCord() {
+		return yCord;
+	}
 }
