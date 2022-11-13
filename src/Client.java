@@ -213,49 +213,62 @@ public class Client {
 	}
 
 	/**
-	 * Processes a left command. This will rotate the one of the tanks in the
+	 * Processes a left command. This will rotate left the one of the tanks in the
 	 * GameModel
-	 * @param moveInfo information from the server on which tank to move
 	 */
 	private void processLeft(String leftInfo) {
-		playerId = Integer.parseInt(leftInfo);
-		game.rotateLeft(playerId);
+		int player = Integer.parseInt(leftInfo);
+		game.rotateLeft(player);
 	}
 	
 	/**
-	 * Processes a move command. This will move the one of the tanks in the
+	 * Processes a right command. This will rotate right the one of the tanks in the
 	 * GameModel
-	 * @param moveInfo information from the server on which tank to move
 	 */
 	private void processRight(String rightInfo) {
-		playerId = Integer.parseInt(rightInfo);
-		game.rotateRight(playerId);
+		int player = Integer.parseInt(rightInfo);
+		game.rotateRight(player);
 	}
 	
 	/**
-	 * Processes a move command. This will move the one of the tanks in the
+	 * Processes a back command. This will move the one of the tanks in the
 	 * GameModel
-	 * @param moveInfo information from the server on which tank to move
 	 */
 	private void processBack(String backInfo) {
-		playerId = Integer.parseInt(backInfo);
-		game.backward(playerId);
+		int player = Integer.parseInt(backInfo);
+		game.backward(player);
 	}
 	
+	/**
+	 * Processes a shoot command. This will create a new bullet in the
+	 * GameModel
+	 */
 	private void processShoot(String shootInfo) {
-		playerId = Integer.parseInt(shootInfo);
-		game.shoot(playerId);
+		int player = Integer.parseInt(shootInfo);
+		game.shoot(player);
 	}
 	
+	/**
+	 * Processes a set playerID command. This will set the playerId field
+	 * in this Client and the GameModel
+	 */
 	private void processID(String idInfo) {
 		playerId = Integer.parseInt(idInfo);
 		game.setAsClient(playerId);
 	}
 	
+	/**
+	 * Processes a set maze command
+	 * @param mazeInfo file name that contians maze info
+	 */
 	private void processMaze(String mazeInfo) {
 		game.setObstacles(mazeInfo);
 	}
 
+	/**
+	 * Processes a set rule command. Tells the GameModel which set of rules
+	 * to use.
+	 */
 	private void processRule(String rule) {
 		game.setRule(rule);
 	}

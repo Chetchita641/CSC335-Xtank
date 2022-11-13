@@ -1,4 +1,10 @@
-
+/**
+ * Author: Grace Driskill
+ * File name: Bullet.java
+ * Course: CSC 335
+ * Assignment: XTank A3
+ * Purpose: Represents a bullet in the XTank game
+ */
 public class Bullet extends Glyph {
 	private static final double LIGHT_VELOCITY = 200;
 	private static final double MEDIUM_VELOCITY = 150;
@@ -26,7 +32,13 @@ public class Bullet extends Glyph {
 	private double velocity;
 	private GameModel game;
 	
-	
+	/**
+	 * Creates a new bullet
+	 * @param x X coordinate of bullet
+	 * @param y Y coordinate of bullet
+	 * @param r orientation of bullet in radians 
+	 * @param type the type of bullet to create
+	 */
 	public Bullet(double x, double y, double r, int type) {
 		xCord = x;
 		yCord = y;
@@ -74,6 +86,10 @@ public class Bullet extends Glyph {
 		return false;
 	}
 
+	/**
+	 * Updates the coordinates of this bullet for the given amount of 
+	 * time that's passed.
+	 */
 	@Override
 	public void update(double deltaTime) {
 		this.deltaTime = deltaTime;
