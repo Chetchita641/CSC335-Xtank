@@ -70,7 +70,6 @@ public class Bullet extends Glyph {
 
 	@Override
 	public boolean intersects(double x, double y) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 

@@ -151,16 +151,6 @@ public class GameModel implements Serializable {
 	}
 
 	/**
-	 * Draws every Gylph in the specified XTankUI
-	 * @param ui
-	 */
-	/*public void drawAll(XTankUI ui) {
-		for(Glyph g: glyphs) {
-			g.draw(ui);
-		}
-	}*/
-	
-	/**
 	 * Creates a new Tank and adds it at the specified index in the list
 	 * of Tanks. Used by Player during game start-up
 	 * @param playerId 	- Id number of the player
@@ -352,7 +342,6 @@ public class GameModel implements Serializable {
 	 */
 	public synchronized void removePlayer(int playerId) {
 		currentPlayers.remove((Integer)playerId);
-		System.out.println("num current players: " + currentPlayers.size());
 	}
 	
 	/**

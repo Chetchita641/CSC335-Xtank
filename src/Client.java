@@ -20,7 +20,6 @@ public class Client {
     private Scanner in;
     private PrintWriter out;
     private GameModel game;
-    //private XTankUI ui;
 	private int playerId;
 	private String name;
 	
@@ -43,19 +42,7 @@ public class Client {
         out.flush();
         game = GameModel.getInstance();
     }
-    
-    /**
-     * Sets the XTankUI to use for this Client
-     * @param ui
-     */
-    /*public void setUI(XTankUI ui) {
-    	this.ui = ui;
-    }
-
-	public XTankUI getUI() {
-		return ui;
-	}*/
-    
+   
     /**
      * Starts the game play for this Client
      * This reads in and processes responses from the server
@@ -66,7 +53,6 @@ public class Client {
             
             do {
             	response = in.nextLine();
-            	System.out.println(response);
             	if(response.startsWith("add tanks")) {
             		processAddTanks(response.substring(10));
             	}
@@ -259,7 +245,7 @@ public class Client {
 	
 	/**
 	 * Processes a set maze command
-	 * @param mazeInfo file name that contians maze info
+	 * @param mazeInfo file name that contains maze info
 	 */
 	private void processMaze(String mazeInfo) {
 		game.setObstacles(mazeInfo);

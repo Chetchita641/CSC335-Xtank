@@ -105,7 +105,9 @@ public class XTankUI{
 				if(gameOverFlag) {
 					gameOverDisplay();
 				}
-				drawAndAnimate();
+				else {
+					drawAndAnimate();
+				}
 				statusMessage.setText(getStatusMessage());
 				statusMessage.pack();
 				display.timerExec(INTERVAL, this);
@@ -119,7 +121,7 @@ public class XTankUI{
 			if (!display.readAndDispatch())
 				display.sleep();
 			}
-			catch (org.eclipse.swt.SWTException e) {}
+			catch (Exception e) {}
 		} 
 
 		display.dispose();		
@@ -138,7 +140,7 @@ public class XTankUI{
 	 */
 	public void gameOverDisplay() {
 		gc.setBackground(display.getSystemColor(SWT.COLOR_GRAY));
-		gc.drawRectangle(600, 300, 300, 300);
+		gc.setForeground(display.getSystemColor(SWT.COLOR_GREEN));
 		gc.drawText("GAME OVER", 300, 600);
 		gc.drawText("Press S to restart", 350, 650);
 	}
@@ -154,24 +156,8 @@ public class XTankUI{
 	 * Method used for updating the game's assets
 	 */
 	public void drawAndAnimate() {
-		/*for(Glyph glyph: gameModel.getGlyphs()) {
+		for(Glyph glyph: gameModel.getGlyphs()) {
 			glyph.draw(this);
-		}*/
-		List<Tank> tanks = gameModel.getTanks();
-		for (Tank tank : tanks) {
-			drawTank(tank);
-		}
-		List<Bullet> bullets = gameModel.getBullets();
-		for (Bullet bullet: bullets) {
-			drawBullet(bullet);
-		}
-		
-		for(Obstacle obstacle : gameModel.getObstacles()) {
-			drawObstacle(obstacle);
-		}
-
-		for (Explosion explosion : gameModel.getExplosions()) {
-			drawExplosion(explosion);
 		}
 		gameModel.updateState();
 		canvas.redraw();

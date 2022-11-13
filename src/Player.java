@@ -70,7 +70,6 @@ public class Player implements Runnable {
 	 * Updates this Player's client with changes in the GameModel
 	 */
 	public void update() {
-		System.out.println("update " + game.getLastChange());
 		output.println(game.getLastChange());
 		output.flush();
 	}
@@ -111,7 +110,6 @@ public class Player implements Runnable {
 	 * process commands loop.
 	 */
 	public void end() {
-		System.out.println("tell player gae over");
 		output.println("game over");
 		output.flush();
 		exit = true;
